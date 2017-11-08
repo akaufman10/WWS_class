@@ -69,6 +69,9 @@ foreach var of varlist `influence' new_intervention `influence' {
 }
 
 *----------------------create varaibles measuring trade ------------------------*
+
+*NOTE: Need to test with logged variables
+
 *CLEANING TASK: figure out why some observations of intntl and US trade > 1
 gen adj_int_trade = (COW_importsWORLD + COW_exportsWORLD ) / total_gdp 
 gen adj_US_trade = (COW_importsUS + COW_exportsUS ) / total_gdp
@@ -138,8 +141,12 @@ gen diff_intl_trade = nom_int_trade_growth - global_nom_int_trade_growth
 *diff in total intl growth
 gen diff_US_trade = nom_US_trade_growth - global_nom_US_trade_growth
 
+rdplot global_adj_int_trade_growth distance_from_intv if -10<= distance_from_intv & distance_from_intv <= 10, p(1) graph_options( title("Effect of USinfluence on Trade (`var')") ytitle("Difference Between National and Global Trade Growth Rate"))
+
+
 
 *twoway scatter US_trade_growth year
+
 
 *run RDD on trend 
 foreach var of varlist diff* {
