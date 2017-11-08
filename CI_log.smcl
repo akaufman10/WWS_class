@@ -1,34 +1,21 @@
 {smcl}
-{com}{sf}{ul off}{txt}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}\\Files\ak29\GitHub\WWS_class\CI_log.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 8 Nov 2017, 17:46:43
+{txt}
 {com}. 
-. /*************************************
-> Last Modified: 11/8
-> Author: Alex Kaufman
-> Changes Made: Corrected growth variables, added tile info, other tweaks
-> 
-> NOTE: Users will need to change the file location of the data set being read in
-> 
-> If the Rdplot command is failing, run the following command
-> net install rdrobust, from(https://sites.google.com/site/rdpackages/rdrobust/stata) replace
-> 
-> For info on the Rdplot function (how to change things on the graphs)
-> http://fmwww.bc.edu/repec/bocode/r/rdplot.html
-> 
-> *************************************/
-. 
-. 
-. 
-. 
-. 
-. *CHANGE THE FILE LOCATION BELOW TO WHERE YOUR DATA IS
 . use "\\files\ak29\ClusterDownloads\Commercial_imperialism_old.dta", clear
 {txt}
 {com}. 
-. **CHANGE THE FILE LOCATIONS BELOW TO WHERE YOU WANT TO SAVE YOUR GRAPHS
-. cd "\\Files\ak29\GitHub\WWS_class"
+. cd "\\Files\ak29\GitHub\WWS_class\
 {res}\\Files\ak29\GitHub\WWS_class
 {txt}
 {com}. 
+. *-------------------create running variable------------------------------*
+. 
+. 
 . *cleaning commands
 . count if year_after_onset > 0 & USinfluence == 0 & US_install_and_support  == 0 & US_support_only == 0
   {res}0
@@ -50,9 +37,8 @@
 {com}. replace inc_count = 0 if new_intervention != 1
 {txt}(1,569 real changes made)
 
-{com}. drop new_intervention
-{txt}
 {com}. 
+. 
 . *calcualte the distance from the first intervention (for each country)
 . sort country year 
 {txt}
@@ -111,7 +97,67 @@ options to control this behavior.{p_end}
 {txt}(625 real changes made, 427 to missing)
 
 {com}. 
-. *create varaibles measuring trade 
+. *----------------------Check correlations of influence ------------------------*
+. foreach var of varlist `influence' new_intervention `influence' {c -(}
+{txt}  2{com}.         corr(`var' ln_total_gdp ln_total_population war economic RUS *_force)
+{txt}  3{com}. {c )-}
+{txt}(obs=4,545)
+
+             {c |} USinfl~e ln_tot~p ln_tot~n      war economic RUSinf~e threat~e show_f~e
+{hline 13}{c +}{hline 72}
+ USinfluence {c |}{res}   1.0000
+{txt}ln_total_gdp {c |}{res}   0.0070   1.0000
+{txt}ln_total_p~n {c |}{res}  -0.0024   0.8154   1.0000
+         {txt}war {c |}{res}  -0.0220   0.0346   0.0629   1.0000
+    {txt}economic {c |}{res}   0.0448   0.0766   0.0790  -0.0070   1.0000
+{txt}RUSinfluence {c |}{res}  -0.1531  -0.0193   0.0327   0.0603  -0.0481   1.0000
+{txt}threat_force {c |}{res}  -0.0110   0.0091   0.0130  -0.0009  -0.0035   0.0301   1.0000
+  {txt}show_force {c |}{res}  -0.0321   0.0260   0.0335  -0.0036  -0.0136   0.1091  -0.0018   1.0000
+   {txt}use_force {c |}{res}  -0.0354   0.0489   0.0742  -0.0067  -0.0005   0.1426  -0.0034  -0.0137
+
+             {txt}{c |} use_fo~e
+{hline 13}{c +}{hline 9}
+   use_force {c |}{res}   1.0000
+
+{txt}(obs=4,545)
+
+             {c |} new_in~n ln_tot~p ln_tot~n      war economic RUSinf~e threat~e show_f~e
+{hline 13}{c +}{hline 72}
+new_interv~n {c |}{res}   1.0000
+{txt}ln_total_gdp {c |}{res}  -0.0020   1.0000
+{txt}ln_total_p~n {c |}{res}  -0.0120   0.8154   1.0000
+         {txt}war {c |}{res}  -0.0044   0.0346   0.0629   1.0000
+    {txt}economic {c |}{res}   0.0019   0.0766   0.0790  -0.0070   1.0000
+{txt}RUSinfluence {c |}{res}  -0.0104  -0.0193   0.0327   0.0603  -0.0481   1.0000
+{txt}threat_force {c |}{res}  -0.0022   0.0091   0.0130  -0.0009  -0.0035   0.0301   1.0000
+  {txt}show_force {c |}{res}  -0.0089   0.0260   0.0335  -0.0036  -0.0136   0.1091  -0.0018   1.0000
+   {txt}use_force {c |}{res}   0.0244   0.0489   0.0742  -0.0067  -0.0005   0.1426  -0.0034  -0.0137
+
+             {txt}{c |} use_fo~e
+{hline 13}{c +}{hline 9}
+   use_force {c |}{res}   1.0000
+
+{txt}(obs=4,545)
+
+             {c |} USinfl~e ln_tot~p ln_tot~n      war economic RUSinf~e threat~e show_f~e
+{hline 13}{c +}{hline 72}
+ USinfluence {c |}{res}   1.0000
+{txt}ln_total_gdp {c |}{res}   0.0070   1.0000
+{txt}ln_total_p~n {c |}{res}  -0.0024   0.8154   1.0000
+         {txt}war {c |}{res}  -0.0220   0.0346   0.0629   1.0000
+    {txt}economic {c |}{res}   0.0448   0.0766   0.0790  -0.0070   1.0000
+{txt}RUSinfluence {c |}{res}  -0.1531  -0.0193   0.0327   0.0603  -0.0481   1.0000
+{txt}threat_force {c |}{res}  -0.0110   0.0091   0.0130  -0.0009  -0.0035   0.0301   1.0000
+  {txt}show_force {c |}{res}  -0.0321   0.0260   0.0335  -0.0036  -0.0136   0.1091  -0.0018   1.0000
+   {txt}use_force {c |}{res}  -0.0354   0.0489   0.0742  -0.0067  -0.0005   0.1426  -0.0034  -0.0137
+
+             {txt}{c |} use_fo~e
+{hline 13}{c +}{hline 9}
+   use_force {c |}{res}   1.0000
+
+{txt}
+{com}. 
+. *----------------------create varaibles measuring trade ------------------------*
 . *CLEANING TASK: figure out why some observations of intntl and US trade > 1
 . gen adj_int_trade = (COW_importsWORLD + COW_exportsWORLD ) / total_gdp 
 {txt}(2,981 missing values generated)
@@ -130,7 +176,9 @@ options to control this behavior.{p_end}
 . *worldwide aggregates
 . bysort year: egen sum_global_int_trade = sum(nom_int_trade)
 {txt}
-{com}. bysort year: egen sum_global_US_trade = sum(nom_US_trade)
+{com}.         
+. *trim the variable to remove extreme values
+. bysort year: egen sum_global_US_trade = sum(nom_US_trade)
 {txt}
 {com}. bysort year: egen sum_global_gdp = sum(total_gdp)
 {txt}
@@ -147,7 +195,7 @@ options to control this behavior.{p_end}
 {com}. bysort year: egen global_nom_US_trade = total(nom_US_trade)
 {txt}
 {com}. 
-. *--------------calculate growth rates----------------------------*
+. *-----------------------calculate growth rates---------------------------------*
 . 
 . 
 . foreach var of varlist adj* nom* global*{c -(}
@@ -158,9 +206,7 @@ options to control this behavior.{p_end}
 {txt}  4{com}. 
 .         *calcualte growth rate
 .         gen `var'_rough = (`var'- l1_`var') / l1_`var'
-{txt}  5{com}.         
-.         *trim the variable to remove extreme values
-.         replace `var'_rough = . if `var'_rough > 10
+{txt}  5{com}.         replace `var'_rough = . if `var'_rough > 10
 {txt}  6{com}.         sum `var'_rough, detail
 {txt}  7{com}.         gen `var'_growth = `var'_rough if `var'_rough <= r(p99)
 {txt}  8{com}.         
@@ -321,6 +367,1878 @@ options to control this behavior.{p_end}
 {txt}(332 missing values generated)
 
 {com}. 
+. *-------------Use a regression design to test the effect of US influence------*
+. 
+. 
+. foreach treat of varlist USinfluence new_intervention {c -(}
+{txt}  2{com}.         foreach var of varlist adj* nom* *_growth {c -(}
+{txt}  3{com}.                 local treatment `treat'
+{txt}  4{com}.             *check correlation
+.             di "now regressing `treat' on `var'"
+{txt}  5{com}.             xtreg `var'  `treat', fe robust
+{txt}  6{com}.             *control for other factors
+.             di "now the same regression controllong for stuff"
+{txt}  7{com}.             xtreg `var'  `treat' ln_total_gdp ln_total_population war economic RUS *_force, fe robust
+{txt}  8{com}.     {c )-}
+{txt}  9{com}. {c )-}
+now regressing USinfluence on adj_int_trade
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,519
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       133
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0013{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.0637{col 63}{txt}avg{col 67}={col 69}{res}      34.0
+{txt}     overall = {res}0.0082{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}1{txt},{res}132{txt}){col 67}={col 70}{res}     3.36
+{txt}corr(u_i, Xb){col 16}= {res}-0.1895{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0690
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:133} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}adj_int_tr~e{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2}-.0202217{col 26}{space 2} .0110308{col 37}{space 1}   -1.83{col 46}{space 3}0.069{col 54}{space 4}-.0420416{col 67}{space 3} .0015982
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .0929126{col 26}{space 2} .0024581{col 37}{space 1}   37.80{col 46}{space 3}0.000{col 54}{space 4} .0880503{col 67}{space 3} .0977749
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .16741975
+     {txt}sigma_e {c |} {res} .13241971
+         {txt}rho {c |} {res} .61516014{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,457
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.2929{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.1924{col 63}{txt}avg{col 67}={col 69}{res}      34.0
+{txt}     overall = {res}0.0287{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}9{txt},{res}130{txt}){col 67}={col 70}{res}    13.25
+{txt}corr(u_i, Xb){col 16}= {res}-0.8810{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}      adj_int_trade{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2}-.0177994{col 33}{space 2} .0097644{col 44}{space 1}   -1.82{col 53}{space 3}0.071{col 61}{space 4}-.0371171{col 74}{space 3} .0015183
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}-.1012045{col 33}{space 2} .0196093{col 44}{space 1}   -5.16{col 53}{space 3}0.000{col 61}{space 4}-.1399991{col 74}{space 3}-.0624099
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .2411226{col 33}{space 2} .0275703{col 44}{space 1}    8.75{col 53}{space 3}0.000{col 61}{space 4}  .186578{col 74}{space 3} .2956671
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0642778{col 33}{space 2} .0328054{col 44}{space 1}    1.96{col 53}{space 3}0.052{col 61}{space 4}-.0006238{col 74}{space 3} .1291794
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-4.56e-06{col 33}{space 2} .0000106{col 44}{space 1}   -0.43{col 53}{space 3}0.668{col 61}{space 4}-.0000255{col 74}{space 3} .0000164
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} -.055918{col 33}{space 2} .0215048{col 44}{space 1}   -2.60{col 53}{space 3}0.010{col 61}{space 4}-.0984627{col 74}{space 3}-.0133734
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0212496{col 33}{space 2} .0579832{col 44}{space 1}   -0.37{col 53}{space 3}0.715{col 61}{space 4}-.1359625{col 74}{space 3} .0934633
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}  .044008{col 33}{space 2} .0479916{col 44}{space 1}    0.92{col 53}{space 3}0.361{col 61}{space 4}-.0509378{col 74}{space 3} .1389537
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2} .0402704{col 33}{space 2} .0322959{col 44}{space 1}    1.25{col 53}{space 3}0.215{col 61}{space 4}-.0236231{col 74}{space 3}  .104164
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-.9737323{col 33}{space 2} .3312917{col 44}{space 1}   -2.94{col 53}{space 3}0.004{col 61}{space 4}-1.629153{col 74}{space 3}-.3183114
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .33615018
+            {txt}sigma_e {c |} {res} .10642067
+                {txt}rho {c |} {res} .90890325{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on adj_US_trade
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,459
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       133
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0015{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0344{col 63}{txt}avg{col 67}={col 69}{res}      33.5
+{txt}     overall = {res}0.0050{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}1{txt},{res}132{txt}){col 67}={col 70}{res}     1.41
+{txt}corr(u_i, Xb){col 16}= {res}-0.1984{txt}{col 49}Prob > F{col 67}={col 73}{res}0.2378
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:133} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}adj_US_trade{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2}-.0036484{col 26}{space 2} .0030765{col 37}{space 1}   -1.19{col 46}{space 3}0.238{col 54}{space 4} -.009734{col 67}{space 3} .0024372
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}  .013449{col 26}{space 2} .0006948{col 37}{space 1}   19.36{col 46}{space 3}0.000{col 54}{space 4} .0120747{col 67}{space 3} .0148234
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .02036239
+     {txt}sigma_e {c |} {res} .02211456
+         {txt}rho {c |} {res} .45882011{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,397
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.2199{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0869{col 63}{txt}avg{col 67}={col 69}{res}      33.6
+{txt}     overall = {res}0.0094{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9182{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}       adj_US_trade{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2}-.0046244{col 33}{space 2} .0025755{col 44}{space 1}   -1.80{col 53}{space 3}0.075{col 61}{space 4}-.0097198{col 74}{space 3}  .000471
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}-.0100571{col 33}{space 2} .0036763{col 44}{space 1}   -2.74{col 53}{space 3}0.007{col 61}{space 4}-.0173302{col 74}{space 3}-.0027841
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0387706{col 33}{space 2} .0043699{col 44}{space 1}    8.87{col 53}{space 3}0.000{col 61}{space 4} .0301253{col 74}{space 3} .0474159
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0100442{col 33}{space 2} .0025965{col 44}{space 1}    3.87{col 53}{space 3}0.000{col 61}{space 4} .0049074{col 74}{space 3} .0151811
+{txt}{space 11}economic {c |}{col 21}{res}{space 2} 1.21e-06{col 33}{space 2} 1.64e-06{col 44}{space 1}    0.74{col 53}{space 3}0.460{col 61}{space 4}-2.02e-06{col 74}{space 3} 4.45e-06
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0111876{col 33}{space 2} .0046499{col 44}{space 1}   -2.41{col 53}{space 3}0.018{col 61}{space 4}-.0203868{col 74}{space 3}-.0019883
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0070519{col 33}{space 2} .0199198{col 44}{space 1}   -0.35{col 53}{space 3}0.724{col 61}{space 4}-.0464608{col 74}{space 3}  .032357
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} .0082107{col 33}{space 2} .0092427{col 44}{space 1}    0.89{col 53}{space 3}0.376{col 61}{space 4}-.0100749{col 74}{space 3} .0264962
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0029182{col 33}{space 2} .0027977{col 44}{space 1}   -1.04{col 53}{space 3}0.299{col 61}{space 4} -.008453{col 74}{space 3} .0026166
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-.2241715{col 33}{space 2} .0554739{col 44}{space 1}   -4.04{col 53}{space 3}0.000{col 61}{space 4}  -.33392{col 74}{space 3} -.114423
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .05489327
+            {txt}sigma_e {c |} {res} .01957387
+                {txt}rho {c |} {res} .88719363{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on adj_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,266
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       133
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0003{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0002{col 63}{txt}avg{col 67}={col 69}{res}      32.1
+{txt}     overall = {res}0.0000{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}1{txt},{res}132{txt}){col 67}={col 70}{res}     0.79
+{txt}corr(u_i, Xb){col 16}= {res}-0.1547{txt}{col 49}Prob > F{col 67}={col 73}{res}0.3771
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:133} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}adj_int_tr~h{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0159882{col 26}{space 2} .0180412{col 37}{space 1}    0.89{col 46}{space 3}0.377{col 54}{space 4} -.019699{col 67}{space 3} .0516754
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1105007{col 26}{space 2} .0040684{col 37}{space 1}   27.16{col 46}{space 3}0.000{col 54}{space 4} .1024531{col 67}{space 3} .1185483
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .03918378
+     {txt}sigma_e {c |} {res} .21972962
+         {txt}rho {c |} {res}  .0308205{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,214
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0224{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0478{col 63}{txt}avg{col 67}={col 69}{res}      32.2
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9860{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}adj_int_trade_gro~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0057157{col 33}{space 2} .0163618{col 44}{space 1}    0.35{col 53}{space 3}0.727{col 61}{space 4}-.0266541{col 74}{space 3} .0380855
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .0964526{col 33}{space 2} .0113108{col 44}{space 1}    8.53{col 53}{space 3}0.000{col 61}{space 4} .0740756{col 74}{space 3} .1188295
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0785883{col 33}{space 2} .0166879{col 44}{space 1}    4.71{col 53}{space 3}0.000{col 61}{space 4} .0455734{col 74}{space 3} .1116033
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.1969533{col 33}{space 2} .0151559{col 44}{space 1}  -13.00{col 53}{space 3}0.000{col 61}{space 4}-.2269375{col 74}{space 3}-.1669691
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-3.54e-06{col 33}{space 2} .0000201{col 44}{space 1}   -0.18{col 53}{space 3}0.861{col 61}{space 4}-.0000433{col 74}{space 3} .0000362
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0092977{col 33}{space 2} .0228868{col 44}{space 1}    0.41{col 53}{space 3}0.685{col 61}{space 4}-.0359811{col 74}{space 3} .0545764
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} .1102421{col 33}{space 2}  .147488{col 44}{space 1}    0.75{col 53}{space 3}0.456{col 61}{space 4}-.1815453{col 74}{space 3} .4020296
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0508527{col 33}{space 2} .0252818{col 44}{space 1}   -2.01{col 53}{space 3}0.046{col 61}{space 4}-.1008697{col 74}{space 3}-.0008357
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2} -.058159{col 33}{space 2} .0350454{col 44}{space 1}   -1.66{col 53}{space 3}0.099{col 61}{space 4}-.1274921{col 74}{space 3} .0111741
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.637987{col 33}{space 2} .2123741{col 44}{space 1}   -7.71{col 53}{space 3}0.000{col 61}{space 4}-2.058144{col 74}{space 3} -1.21783
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .31240481
+            {txt}sigma_e {c |} {res} .21650294
+                {txt}rho {c |} {res} .67554905{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on adj_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,099
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0010{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0002{col 63}{txt}avg{col 67}={col 69}{res}      31.3
+{txt}     overall = {res}0.0000{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}1{txt},{res}130{txt}){col 67}={col 70}{res}     3.80
+{txt}corr(u_i, Xb){col 16}= {res}-0.2336{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0534
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}adj_US_tra~h{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2}   .05191{col 26}{space 2} .0266243{col 37}{space 1}    1.95{col 46}{space 3}0.053{col 54}{space 4}-.0007631{col 67}{space 3} .1045831
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1176851{col 26}{space 2} .0062745{col 37}{space 1}   18.76{col 46}{space 3}0.000{col 54}{space 4} .1052718{col 67}{space 3} .1300984
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .12964137
+     {txt}sigma_e {c |} {res}  .3982558
+         {txt}rho {c |} {res} .09581237{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,047
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       129
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0140{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0098{col 63}{txt}avg{col 67}={col 69}{res}      31.4
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,128)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9504{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:129} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}adj_US_trade_growth{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0300155{col 33}{space 2} .0236614{col 44}{space 1}    1.27{col 53}{space 3}0.207{col 61}{space 4}-.0168026{col 74}{space 3} .0768336
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1002491{col 33}{space 2} .0204563{col 44}{space 1}    4.90{col 53}{space 3}0.000{col 61}{space 4} .0597728{col 74}{space 3} .1407254
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0860161{col 33}{space 2} .0286409{col 44}{space 1}    3.00{col 53}{space 3}0.003{col 61}{space 4} .0293451{col 74}{space 3} .1426871
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.7749353{col 33}{space 2} .0201921{col 44}{space 1}  -38.38{col 53}{space 3}0.000{col 61}{space 4}-.8148888{col 74}{space 3}-.7349818
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-9.45e-06{col 33}{space 2} .0000299{col 44}{space 1}   -0.32{col 53}{space 3}0.752{col 61}{space 4}-.0000686{col 74}{space 3} .0000497
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0098341{col 33}{space 2} .0312722{col 44}{space 1}   -0.31{col 53}{space 3}0.754{col 61}{space 4}-.0717115{col 74}{space 3} .0520433
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.1658883{col 33}{space 2} .0925674{col 44}{space 1}   -1.79{col 53}{space 3}0.075{col 61}{space 4}-.3490487{col 74}{space 3} .0172721
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.1398237{col 33}{space 2} .0617162{col 44}{space 1}   -2.27{col 53}{space 3}0.025{col 61}{space 4}-.2619396{col 74}{space 3}-.0177077
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.1837335{col 33}{space 2} .0730102{col 44}{space 1}   -2.52{col 53}{space 3}0.013{col 61}{space 4}-.3281965{col 74}{space 3}-.0392704
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.739991{col 33}{space 2} .3651621{col 44}{space 1}   -4.76{col 53}{space 3}0.000{col 61}{space 4}-2.462527{col 74}{space 3}-1.017455
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .33158243
+            {txt}sigma_e {c |} {res} .39503411
+                {txt}rho {c |} {res} .41333602{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on nom_int_trade
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     5,105
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       160
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0075{col 63}{txt}min{col 67}={col 69}{res}         2
+{txt}     between = {res}0.0003{col 63}{txt}avg{col 67}={col 69}{res}      31.9
+{txt}     overall = {res}0.0021{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}1{txt},{res}159{txt}){col 67}={col 70}{res}     1.90
+{txt}corr(u_i, Xb){col 16}= {res}-0.1146{txt}{col 49}Prob > F{col 67}={col 73}{res}0.1700
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:160} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}nom_int_tr~e{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2}-10682.43{col 26}{space 2} 7749.824{col 37}{space 1}   -1.38{col 46}{space 3}0.170{col 54}{space 4}-25988.31{col 67}{space 3} 4623.439
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}  12550.8{col 26}{space 2} 1583.363{col 37}{space 1}    7.93{col 46}{space 3}0.000{col 54}{space 4} 9423.661{col 67}{space 3} 15677.93
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} 21866.674
+     {txt}sigma_e {c |} {res} 27903.629
+         {txt}rho {c |} {res} .38046242{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,457
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0610{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.0337{col 63}{txt}avg{col 67}={col 69}{res}      34.0
+{txt}     overall = {res}0.0309{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}9{txt},{res}130{txt}){col 67}={col 70}{res}     4.53
+{txt}corr(u_i, Xb){col 16}= {res}-0.5915{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}      nom_int_trade{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2}-12283.54{col 33}{space 2} 8858.097{col 44}{space 1}   -1.39{col 53}{space 3}0.168{col 61}{space 4}-29808.23{col 74}{space 3} 5241.143
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}-9318.466{col 33}{space 2} 6153.294{col 44}{space 1}   -1.51{col 53}{space 3}0.132{col 61}{space 4}-21492.02{col 74}{space 3}  2855.09
+{txt}ln_total_population {c |}{col 21}{res}{space 2} 24677.33{col 33}{space 2} 4538.513{col 44}{space 1}    5.44{col 53}{space 3}0.000{col 61}{space 4} 15698.43{col 74}{space 3} 33656.24
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-5694.228{col 33}{space 2} 7147.953{col 44}{space 1}   -0.80{col 53}{space 3}0.427{col 61}{space 4} -19835.6{col 74}{space 3} 8447.143
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-4.932957{col 33}{space 2} 4.383087{col 44}{space 1}   -1.13{col 53}{space 3}0.262{col 61}{space 4}-13.60437{col 74}{space 3} 3.738456
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-11770.51{col 33}{space 2} 5679.154{col 44}{space 1}   -2.07{col 53}{space 3}0.040{col 61}{space 4}-23006.04{col 74}{space 3}-534.9868
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-5445.999{col 33}{space 2}  8841.66{col 44}{space 1}   -0.62{col 53}{space 3}0.539{col 61}{space 4}-22938.16{col 74}{space 3} 12046.17
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-1247.311{col 33}{space 2} 6757.062{col 44}{space 1}   -0.18{col 53}{space 3}0.854{col 61}{space 4}-14615.35{col 74}{space 3} 12120.73
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-3079.478{col 33}{space 2} 3018.487{col 44}{space 1}   -1.02{col 53}{space 3}0.310{col 61}{space 4}-9051.194{col 74}{space 3} 2892.239
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-104802.1{col 33}{space 2} 75193.89{col 44}{space 1}   -1.39{col 53}{space 3}0.166{col 61}{space 4}-253564.2{col 74}{space 3} 43960.04
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} 31214.429
+            {txt}sigma_e {c |} {res} 28970.871
+                {txt}rho {c |} {res} .53722579{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on nom_US_trade
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     5,041
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       159
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0060{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0012{col 63}{txt}avg{col 67}={col 69}{res}      31.7
+{txt}     overall = {res}0.0008{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}1{txt},{res}158{txt}){col 67}={col 70}{res}     1.30
+{txt}corr(u_i, Xb){col 16}= {res}-0.1202{txt}{col 49}Prob > F{col 67}={col 73}{res}0.2557
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:159} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}nom_US_trade{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} -2184.67{col 26}{space 2}  1914.93{col 37}{space 1}   -1.14{col 46}{space 3}0.256{col 54}{space 4}-5966.832{col 67}{space 3} 1597.493
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2}  2211.29{col 26}{space 2} 396.2054{col 37}{space 1}    5.58{col 46}{space 3}0.000{col 54}{space 4} 1428.747{col 67}{space 3} 2993.832
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} 4884.4292
+     {txt}sigma_e {c |} {res} 6459.6038
+         {txt}rho {c |} {res} .36377167{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,397
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0486{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0888{col 63}{txt}avg{col 67}={col 69}{res}      33.6
+{txt}     overall = {res}0.0518{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.7310{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}       nom_US_trade{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} -2582.08{col 33}{space 2} 2186.801{col 44}{space 1}   -1.18{col 53}{space 3}0.240{col 61}{space 4}-6908.405{col 74}{space 3} 1744.245
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}-183.7798{col 33}{space 2} 919.9922{col 44}{space 1}   -0.20{col 53}{space 3}0.842{col 61}{space 4}-2003.874{col 74}{space 3} 1636.315
+{txt}ln_total_population {c |}{col 21}{res}{space 2} 5507.976{col 33}{space 2} 1554.974{col 44}{space 1}    3.54{col 53}{space 3}0.001{col 61}{space 4} 2431.645{col 74}{space 3} 8584.306
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-762.8752{col 33}{space 2} 1166.187{col 44}{space 1}   -0.65{col 53}{space 3}0.514{col 61}{space 4}-3070.036{col 74}{space 3} 1544.286
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.7203602{col 33}{space 2}  .552031{col 44}{space 1}   -1.30{col 53}{space 3}0.194{col 61}{space 4}-1.812487{col 74}{space 3} .3717671
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-2446.267{col 33}{space 2} 1413.202{col 44}{space 1}   -1.73{col 53}{space 3}0.086{col 61}{space 4}-5242.118{col 74}{space 3}  349.584
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-2397.066{col 33}{space 2} 3252.984{col 44}{space 1}   -0.74{col 53}{space 3}0.463{col 61}{space 4}-8832.706{col 74}{space 3} 4038.574
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} 3268.253{col 33}{space 2} 4819.761{col 44}{space 1}    0.68{col 53}{space 3}0.499{col 61}{space 4}-6267.067{col 74}{space 3} 12803.57
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-623.3464{col 33}{space 2} 968.0049{col 44}{space 1}   -0.64{col 53}{space 3}0.521{col 61}{space 4}-2538.428{col 74}{space 3} 1291.736
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-44564.78{col 33}{space 2} 16010.25{col 44}{space 1}   -2.78{col 53}{space 3}0.006{col 61}{space 4}-76239.15{col 74}{space 3} -12890.4
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} 8461.7422
+            {txt}sigma_e {c |} {res} 6765.3971
+                {txt}rho {c |} {res} .61003712{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on nom_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,800
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       160
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0009{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0009{col 63}{txt}avg{col 67}={col 69}{res}      30.0
+{txt}     overall = {res}0.0003{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}1{txt},{res}159{txt}){col 67}={col 70}{res}     3.51
+{txt}corr(u_i, Xb){col 16}= {res}-0.1749{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0627
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:160} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}nom_int_tr~h{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0294385{col 26}{space 2} .0157062{col 37}{space 1}    1.87{col 46}{space 3}0.063{col 54}{space 4}-.0015812{col 67}{space 3} .0604581
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1015661{col 26}{space 2}  .003259{col 37}{space 1}   31.16{col 46}{space 3}0.000{col 54}{space 4} .0951295{col 67}{space 3} .1080027
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res}  .0859929
+     {txt}sigma_e {c |} {res} .22181854
+         {txt}rho {c |} {res} .13065385{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,233
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0315{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0039{col 63}{txt}avg{col 67}={col 69}{res}      32.3
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9672{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}nom_int_trade_gro~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0138883{col 33}{space 2} .0157081{col 44}{space 1}    0.88{col 53}{space 3}0.378{col 61}{space 4}-.0171883{col 74}{space 3} .0449649
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1244287{col 33}{space 2} .0114132{col 44}{space 1}   10.90{col 53}{space 3}0.000{col 61}{space 4} .1018491{col 74}{space 3} .1470084
+{txt}ln_total_population {c |}{col 21}{res}{space 2} -.011973{col 33}{space 2} .0180086{col 44}{space 1}   -0.66{col 53}{space 3}0.507{col 61}{space 4}-.0476009{col 74}{space 3} .0236548
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.1889241{col 33}{space 2} .0171376{col 44}{space 1}  -11.02{col 53}{space 3}0.000{col 61}{space 4}-.2228288{col 74}{space 3}-.1550194
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-5.44e-06{col 33}{space 2} .0000133{col 44}{space 1}   -0.41{col 53}{space 3}0.683{col 61}{space 4}-.0000317{col 74}{space 3} .0000209
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0088831{col 33}{space 2} .0229515{col 44}{space 1}    0.39{col 53}{space 3}0.699{col 61}{space 4}-.0365236{col 74}{space 3} .0542899
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} .0498347{col 33}{space 2}  .213426{col 44}{space 1}    0.23{col 53}{space 3}0.816{col 61}{space 4}-.3724031{col 74}{space 3} .4720726
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0882516{col 33}{space 2} .0282207{col 44}{space 1}   -3.13{col 53}{space 3}0.002{col 61}{space 4}-.1440828{col 74}{space 3}-.0324204
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0832914{col 33}{space 2} .0328247{col 44}{space 1}   -2.54{col 53}{space 3}0.012{col 61}{space 4}-.1482312{col 74}{space 3}-.0183517
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.133269{col 33}{space 2} .2182026{col 44}{space 1}   -5.19{col 53}{space 3}0.000{col 61}{space 4}-1.564956{col 74}{space 3}-.7015811
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .23505614
+            {txt}sigma_e {c |} {res} .21301351
+                {txt}rho {c |} {res} .54907588{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on nom_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,590
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       157
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0014{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0003{col 63}{txt}avg{col 67}={col 69}{res}      29.2
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}1{txt},{res}156{txt}){col 67}={col 70}{res}     7.76
+{txt}corr(u_i, Xb){col 16}= {res}-0.2532{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0060
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:157} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}nom_US_tra~h{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0626239{col 26}{space 2} .0224746{col 37}{space 1}    2.79{col 46}{space 3}0.006{col 54}{space 4} .0182302{col 67}{space 3} .1070176
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1096974{col 26}{space 2} .0048964{col 37}{space 1}   22.40{col 46}{space 3}0.000{col 54}{space 4} .1000255{col 67}{space 3} .1193692
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .12856812
+     {txt}sigma_e {c |} {res} .39551214
+         {txt}rho {c |} {res} .09557007{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,063
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       129
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0176{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0162{col 63}{txt}avg{col 67}={col 69}{res}      31.5
+{txt}     overall = {res}0.0002{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,128)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9058{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:129} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}nom_US_trade_growth{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0349031{col 33}{space 2} .0229222{col 44}{space 1}    1.52{col 53}{space 3}0.130{col 61}{space 4}-.0104523{col 74}{space 3} .0802586
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1235238{col 33}{space 2} .0214798{col 44}{space 1}    5.75{col 53}{space 3}0.000{col 61}{space 4} .0810224{col 74}{space 3} .1660253
+{txt}ln_total_population {c |}{col 21}{res}{space 2}-.0065345{col 33}{space 2} .0311738{col 44}{space 1}   -0.21{col 53}{space 3}0.834{col 61}{space 4}-.0682172{col 74}{space 3} .0551482
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.6651741{col 33}{space 2} .0229155{col 44}{space 1}  -29.03{col 53}{space 3}0.000{col 61}{space 4}-.7105162{col 74}{space 3}-.6198319
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000131{col 33}{space 2} .0000242{col 44}{space 1}   -0.54{col 53}{space 3}0.589{col 61}{space 4}-.0000609{col 74}{space 3} .0000347
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0250619{col 33}{space 2} .0310993{col 44}{space 1}   -0.81{col 53}{space 3}0.422{col 61}{space 4}-.0865973{col 74}{space 3} .0364735
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.2090999{col 33}{space 2} .0400506{col 44}{space 1}   -5.22{col 53}{space 3}0.000{col 61}{space 4}-.2883469{col 74}{space 3} -.129853
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} -.154501{col 33}{space 2} .0540895{col 44}{space 1}   -2.86{col 53}{space 3}0.005{col 61}{space 4}-.2615263{col 74}{space 3}-.0474757
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.2133032{col 33}{space 2}  .072757{col 44}{space 1}   -2.93{col 53}{space 3}0.004{col 61}{space 4}-.3572653{col 74}{space 3} -.069341
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.165074{col 33}{space 2} .4085758{col 44}{space 1}   -2.85{col 53}{space 3}0.005{col 61}{space 4}-1.973511{col 74}{space 3}-.3566365
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .25207599
+            {txt}sigma_e {c |} {res} .38729134
+                {txt}rho {c |} {res} .29757062{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on adj_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,266
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       133
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0003{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0002{col 63}{txt}avg{col 67}={col 69}{res}      32.1
+{txt}     overall = {res}0.0000{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}1{txt},{res}132{txt}){col 67}={col 70}{res}     0.79
+{txt}corr(u_i, Xb){col 16}= {res}-0.1547{txt}{col 49}Prob > F{col 67}={col 73}{res}0.3771
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:133} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}adj_int_tr~h{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0159882{col 26}{space 2} .0180412{col 37}{space 1}    0.89{col 46}{space 3}0.377{col 54}{space 4} -.019699{col 67}{space 3} .0516754
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1105007{col 26}{space 2} .0040684{col 37}{space 1}   27.16{col 46}{space 3}0.000{col 54}{space 4} .1024531{col 67}{space 3} .1185483
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .03918378
+     {txt}sigma_e {c |} {res} .21972962
+         {txt}rho {c |} {res}  .0308205{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,214
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0224{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0478{col 63}{txt}avg{col 67}={col 69}{res}      32.2
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9860{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}adj_int_trade_gro~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0057157{col 33}{space 2} .0163618{col 44}{space 1}    0.35{col 53}{space 3}0.727{col 61}{space 4}-.0266541{col 74}{space 3} .0380855
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .0964526{col 33}{space 2} .0113108{col 44}{space 1}    8.53{col 53}{space 3}0.000{col 61}{space 4} .0740756{col 74}{space 3} .1188295
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0785883{col 33}{space 2} .0166879{col 44}{space 1}    4.71{col 53}{space 3}0.000{col 61}{space 4} .0455734{col 74}{space 3} .1116033
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.1969533{col 33}{space 2} .0151559{col 44}{space 1}  -13.00{col 53}{space 3}0.000{col 61}{space 4}-.2269375{col 74}{space 3}-.1669691
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-3.54e-06{col 33}{space 2} .0000201{col 44}{space 1}   -0.18{col 53}{space 3}0.861{col 61}{space 4}-.0000433{col 74}{space 3} .0000362
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0092977{col 33}{space 2} .0228868{col 44}{space 1}    0.41{col 53}{space 3}0.685{col 61}{space 4}-.0359811{col 74}{space 3} .0545764
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} .1102421{col 33}{space 2}  .147488{col 44}{space 1}    0.75{col 53}{space 3}0.456{col 61}{space 4}-.1815453{col 74}{space 3} .4020296
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0508527{col 33}{space 2} .0252818{col 44}{space 1}   -2.01{col 53}{space 3}0.046{col 61}{space 4}-.1008697{col 74}{space 3}-.0008357
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2} -.058159{col 33}{space 2} .0350454{col 44}{space 1}   -1.66{col 53}{space 3}0.099{col 61}{space 4}-.1274921{col 74}{space 3} .0111741
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.637987{col 33}{space 2} .2123741{col 44}{space 1}   -7.71{col 53}{space 3}0.000{col 61}{space 4}-2.058144{col 74}{space 3} -1.21783
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .31240481
+            {txt}sigma_e {c |} {res} .21650294
+                {txt}rho {c |} {res} .67554905{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on adj_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,099
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0010{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0002{col 63}{txt}avg{col 67}={col 69}{res}      31.3
+{txt}     overall = {res}0.0000{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}1{txt},{res}130{txt}){col 67}={col 70}{res}     3.80
+{txt}corr(u_i, Xb){col 16}= {res}-0.2336{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0534
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}adj_US_tra~h{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2}   .05191{col 26}{space 2} .0266243{col 37}{space 1}    1.95{col 46}{space 3}0.053{col 54}{space 4}-.0007631{col 67}{space 3} .1045831
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1176851{col 26}{space 2} .0062745{col 37}{space 1}   18.76{col 46}{space 3}0.000{col 54}{space 4} .1052718{col 67}{space 3} .1300984
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .12964137
+     {txt}sigma_e {c |} {res}  .3982558
+         {txt}rho {c |} {res} .09581237{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,047
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       129
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0140{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0098{col 63}{txt}avg{col 67}={col 69}{res}      31.4
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,128)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9504{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:129} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}adj_US_trade_growth{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0300155{col 33}{space 2} .0236614{col 44}{space 1}    1.27{col 53}{space 3}0.207{col 61}{space 4}-.0168026{col 74}{space 3} .0768336
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1002491{col 33}{space 2} .0204563{col 44}{space 1}    4.90{col 53}{space 3}0.000{col 61}{space 4} .0597728{col 74}{space 3} .1407254
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0860161{col 33}{space 2} .0286409{col 44}{space 1}    3.00{col 53}{space 3}0.003{col 61}{space 4} .0293451{col 74}{space 3} .1426871
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.7749353{col 33}{space 2} .0201921{col 44}{space 1}  -38.38{col 53}{space 3}0.000{col 61}{space 4}-.8148888{col 74}{space 3}-.7349818
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-9.45e-06{col 33}{space 2} .0000299{col 44}{space 1}   -0.32{col 53}{space 3}0.752{col 61}{space 4}-.0000686{col 74}{space 3} .0000497
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0098341{col 33}{space 2} .0312722{col 44}{space 1}   -0.31{col 53}{space 3}0.754{col 61}{space 4}-.0717115{col 74}{space 3} .0520433
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.1658883{col 33}{space 2} .0925674{col 44}{space 1}   -1.79{col 53}{space 3}0.075{col 61}{space 4}-.3490487{col 74}{space 3} .0172721
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.1398237{col 33}{space 2} .0617162{col 44}{space 1}   -2.27{col 53}{space 3}0.025{col 61}{space 4}-.2619396{col 74}{space 3}-.0177077
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.1837335{col 33}{space 2} .0730102{col 44}{space 1}   -2.52{col 53}{space 3}0.013{col 61}{space 4}-.3281965{col 74}{space 3}-.0392704
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.739991{col 33}{space 2} .3651621{col 44}{space 1}   -4.76{col 53}{space 3}0.000{col 61}{space 4}-2.462527{col 74}{space 3}-1.017455
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .33158243
+            {txt}sigma_e {c |} {res} .39503411
+                {txt}rho {c |} {res} .41333602{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on nom_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,800
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       160
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0009{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0009{col 63}{txt}avg{col 67}={col 69}{res}      30.0
+{txt}     overall = {res}0.0003{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}1{txt},{res}159{txt}){col 67}={col 70}{res}     3.51
+{txt}corr(u_i, Xb){col 16}= {res}-0.1749{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0627
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:160} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}nom_int_tr~h{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0294385{col 26}{space 2} .0157062{col 37}{space 1}    1.87{col 46}{space 3}0.063{col 54}{space 4}-.0015812{col 67}{space 3} .0604581
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1015661{col 26}{space 2}  .003259{col 37}{space 1}   31.16{col 46}{space 3}0.000{col 54}{space 4} .0951295{col 67}{space 3} .1080027
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res}  .0859929
+     {txt}sigma_e {c |} {res} .22181854
+         {txt}rho {c |} {res} .13065385{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,233
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0315{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0039{col 63}{txt}avg{col 67}={col 69}{res}      32.3
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9672{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}nom_int_trade_gro~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0138883{col 33}{space 2} .0157081{col 44}{space 1}    0.88{col 53}{space 3}0.378{col 61}{space 4}-.0171883{col 74}{space 3} .0449649
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1244287{col 33}{space 2} .0114132{col 44}{space 1}   10.90{col 53}{space 3}0.000{col 61}{space 4} .1018491{col 74}{space 3} .1470084
+{txt}ln_total_population {c |}{col 21}{res}{space 2} -.011973{col 33}{space 2} .0180086{col 44}{space 1}   -0.66{col 53}{space 3}0.507{col 61}{space 4}-.0476009{col 74}{space 3} .0236548
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.1889241{col 33}{space 2} .0171376{col 44}{space 1}  -11.02{col 53}{space 3}0.000{col 61}{space 4}-.2228288{col 74}{space 3}-.1550194
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-5.44e-06{col 33}{space 2} .0000133{col 44}{space 1}   -0.41{col 53}{space 3}0.683{col 61}{space 4}-.0000317{col 74}{space 3} .0000209
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0088831{col 33}{space 2} .0229515{col 44}{space 1}    0.39{col 53}{space 3}0.699{col 61}{space 4}-.0365236{col 74}{space 3} .0542899
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} .0498347{col 33}{space 2}  .213426{col 44}{space 1}    0.23{col 53}{space 3}0.816{col 61}{space 4}-.3724031{col 74}{space 3} .4720726
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0882516{col 33}{space 2} .0282207{col 44}{space 1}   -3.13{col 53}{space 3}0.002{col 61}{space 4}-.1440828{col 74}{space 3}-.0324204
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0832914{col 33}{space 2} .0328247{col 44}{space 1}   -2.54{col 53}{space 3}0.012{col 61}{space 4}-.1482312{col 74}{space 3}-.0183517
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.133269{col 33}{space 2} .2182026{col 44}{space 1}   -5.19{col 53}{space 3}0.000{col 61}{space 4}-1.564956{col 74}{space 3}-.7015811
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .23505614
+            {txt}sigma_e {c |} {res} .21301351
+                {txt}rho {c |} {res} .54907588{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on nom_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,590
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       157
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0014{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0003{col 63}{txt}avg{col 67}={col 69}{res}      29.2
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}1{txt},{res}156{txt}){col 67}={col 70}{res}     7.76
+{txt}corr(u_i, Xb){col 16}= {res}-0.2532{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0060
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:157} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}nom_US_tra~h{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0626239{col 26}{space 2} .0224746{col 37}{space 1}    2.79{col 46}{space 3}0.006{col 54}{space 4} .0182302{col 67}{space 3} .1070176
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1096974{col 26}{space 2} .0048964{col 37}{space 1}   22.40{col 46}{space 3}0.000{col 54}{space 4} .1000255{col 67}{space 3} .1193692
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .12856812
+     {txt}sigma_e {c |} {res} .39551214
+         {txt}rho {c |} {res} .09557007{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,063
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       129
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0176{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0162{col 63}{txt}avg{col 67}={col 69}{res}      31.5
+{txt}     overall = {res}0.0002{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,128)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9058{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:129} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}nom_US_trade_growth{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0349031{col 33}{space 2} .0229222{col 44}{space 1}    1.52{col 53}{space 3}0.130{col 61}{space 4}-.0104523{col 74}{space 3} .0802586
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1235238{col 33}{space 2} .0214798{col 44}{space 1}    5.75{col 53}{space 3}0.000{col 61}{space 4} .0810224{col 74}{space 3} .1660253
+{txt}ln_total_population {c |}{col 21}{res}{space 2}-.0065345{col 33}{space 2} .0311738{col 44}{space 1}   -0.21{col 53}{space 3}0.834{col 61}{space 4}-.0682172{col 74}{space 3} .0551482
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.6651741{col 33}{space 2} .0229155{col 44}{space 1}  -29.03{col 53}{space 3}0.000{col 61}{space 4}-.7105162{col 74}{space 3}-.6198319
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000131{col 33}{space 2} .0000242{col 44}{space 1}   -0.54{col 53}{space 3}0.589{col 61}{space 4}-.0000609{col 74}{space 3} .0000347
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0250619{col 33}{space 2} .0310993{col 44}{space 1}   -0.81{col 53}{space 3}0.422{col 61}{space 4}-.0865973{col 74}{space 3} .0364735
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.2090999{col 33}{space 2} .0400506{col 44}{space 1}   -5.22{col 53}{space 3}0.000{col 61}{space 4}-.2883469{col 74}{space 3} -.129853
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} -.154501{col 33}{space 2} .0540895{col 44}{space 1}   -2.86{col 53}{space 3}0.005{col 61}{space 4}-.2615263{col 74}{space 3}-.0474757
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.2133032{col 33}{space 2}  .072757{col 44}{space 1}   -2.93{col 53}{space 3}0.004{col 61}{space 4}-.3572653{col 74}{space 3} -.069341
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.165074{col 33}{space 2} .4085758{col 44}{space 1}   -2.85{col 53}{space 3}0.005{col 61}{space 4}-1.973511{col 74}{space 3}-.3566365
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .25207599
+            {txt}sigma_e {c |} {res} .38729134
+                {txt}rho {c |} {res} .29757062{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on global_adj_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     5,288
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       166
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0023{col 63}{txt}min{col 67}={col 69}{res}         4
+{txt}     between = {res}0.0023{col 63}{txt}avg{col 67}={col 69}{res}      31.9
+{txt}     overall = {res}0.0002{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}1{txt},{res}165{txt}){col 67}={col 70}{res}     4.07
+{txt}corr(u_i, Xb){col 16}= {res}-0.4425{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0453
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:166} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}global_adj..{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0341651{col 26}{space 2} .0169401{col 37}{space 1}    2.02{col 46}{space 3}0.045{col 54}{space 4} .0007178{col 67}{space 3} .0676123
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1055764{col 26}{space 2} .0033797{col 37}{space 1}   31.24{col 46}{space 3}0.000{col 54}{space 4} .0989034{col 67}{space 3} .1122494
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .02748695
+     {txt}sigma_e {c |} {res} .15834711
+         {txt}rho {c |} {res} .02925094{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,501
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       132
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0984{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.2571{col 63}{txt}avg{col 67}={col 69}{res}      34.1
+{txt}     overall = {res}0.0007{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}9{txt},{res}131{txt}){col 67}={col 70}{res}    28.63
+{txt}corr(u_i, Xb){col 16}= {res}-0.9919{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:132} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}global_adj_int_tr~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0254102{col 33}{space 2} .0110399{col 44}{space 1}    2.30{col 53}{space 3}0.023{col 61}{space 4} .0035707{col 74}{space 3} .0472498
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1299653{col 33}{space 2} .0116618{col 44}{space 1}   11.14{col 53}{space 3}0.000{col 61}{space 4} .1068954{col 74}{space 3} .1530352
+{txt}ln_total_population {c |}{col 21}{res}{space 2}   .12125{col 33}{space 2} .0150263{col 44}{space 1}    8.07{col 53}{space 3}0.000{col 61}{space 4} .0915243{col 74}{space 3} .1509756
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.0153668{col 33}{space 2} .0238665{col 44}{space 1}   -0.64{col 53}{space 3}0.521{col 61}{space 4}-.0625805{col 74}{space 3} .0318469
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000157{col 33}{space 2} .0000223{col 44}{space 1}   -0.71{col 53}{space 3}0.481{col 61}{space 4}-.0000598{col 74}{space 3} .0000283
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0621841{col 33}{space 2} .0199763{col 44}{space 1}    3.11{col 53}{space 3}0.002{col 61}{space 4} .0226662{col 74}{space 3}  .101702
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0679959{col 33}{space 2} .0189475{col 44}{space 1}   -3.59{col 53}{space 3}0.000{col 61}{space 4}-.1054785{col 74}{space 3}-.0305133
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0421104{col 33}{space 2} .0220452{col 44}{space 1}   -1.91{col 53}{space 3}0.058{col 61}{space 4} -.085721{col 74}{space 3} .0015003
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0034207{col 33}{space 2} .0182709{col 44}{space 1}   -0.19{col 53}{space 3}0.852{col 61}{space 4} -.039565{col 74}{space 3} .0327236
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-2.386225{col 33}{space 2}  .219723{col 44}{space 1}  -10.86{col 53}{space 3}0.000{col 61}{space 4} -2.82089{col 74}{space 3}-1.951561
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .44154058
+            {txt}sigma_e {c |} {res} .14777623
+                {txt}rho {c |} {res} .89927017{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on global_adj_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     5,288
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       166
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0027{col 63}{txt}min{col 67}={col 69}{res}         4
+{txt}     between = {res}0.0121{col 63}{txt}avg{col 67}={col 69}{res}      31.9
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}1{txt},{res}165{txt}){col 67}={col 70}{res}     3.29
+{txt}corr(u_i, Xb){col 16}= {res}-0.4148{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0716
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:166} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}global_adj..{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2}  .035219{col 26}{space 2} .0194221{col 37}{space 1}    1.81{col 46}{space 3}0.072{col 54}{space 4} -.003129{col 67}{space 3} .0735669
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .0932631{col 26}{space 2} .0038749{col 37}{space 1}   24.07{col 46}{space 3}0.000{col 54}{space 4} .0856124{col 67}{space 3} .1009138
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res}  .0330723
+     {txt}sigma_e {c |} {res} .15225856
+         {txt}rho {c |} {res} .04505507{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,501
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       132
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.1385{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.2779{col 63}{txt}avg{col 67}={col 69}{res}      34.1
+{txt}     overall = {res}0.0014{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}9{txt},{res}131{txt}){col 67}={col 70}{res}   464.43
+{txt}corr(u_i, Xb){col 16}= {res}-0.9915{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:132} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}global_adj_US_tra~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2}  .026493{col 33}{space 2} .0116816{col 44}{space 1}    2.27{col 53}{space 3}0.025{col 61}{space 4} .0033841{col 74}{space 3}  .049602
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1134314{col 33}{space 2} .0113911{col 44}{space 1}    9.96{col 53}{space 3}0.000{col 61}{space 4} .0908972{col 74}{space 3} .1359657
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .1745436{col 33}{space 2} .0156832{col 44}{space 1}   11.13{col 53}{space 3}0.000{col 61}{space 4} .1435185{col 74}{space 3} .2055687
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0209046{col 33}{space 2} .0224435{col 44}{space 1}    0.93{col 53}{space 3}0.353{col 61}{space 4} -.023494{col 74}{space 3} .0653032
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000153{col 33}{space 2} .0000227{col 44}{space 1}   -0.67{col 53}{space 3}0.501{col 61}{space 4}-.0000601{col 74}{space 3} .0000295
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0630143{col 33}{space 2} .0186287{col 44}{space 1}    3.38{col 53}{space 3}0.001{col 61}{space 4} .0261623{col 74}{space 3} .0998664
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0584238{col 33}{space 2} .0073723{col 44}{space 1}   -7.92{col 53}{space 3}0.000{col 61}{space 4}-.0730079{col 74}{space 3}-.0438398
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} -.034972{col 33}{space 2} .0204519{col 44}{space 1}   -1.71{col 53}{space 3}0.090{col 61}{space 4}-.0754308{col 74}{space 3} .0054868
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0055021{col 33}{space 2} .0155657{col 44}{space 1}   -0.35{col 53}{space 3}0.724{col 61}{space 4}-.0362947{col 74}{space 3} .0252906
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-2.698016{col 33}{space 2} .2184991{col 44}{space 1}  -12.35{col 53}{space 3}0.000{col 61}{space 4}-3.130259{col 74}{space 3}-2.265773
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .49539489
+            {txt}sigma_e {c |} {res} .13746138
+                {txt}rho {c |} {res} .92851005{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on global_nom_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     5,288
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       166
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0026{col 63}{txt}min{col 67}={col 69}{res}         4
+{txt}     between = {res}0.0057{col 63}{txt}avg{col 67}={col 69}{res}      31.9
+{txt}     overall = {res}0.0006{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}1{txt},{res}165{txt}){col 67}={col 70}{res}     8.71
+{txt}corr(u_i, Xb){col 16}= {res}-0.5339{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0036
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:166} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}global_nom..{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0313513{col 26}{space 2} .0106206{col 37}{space 1}    2.95{col 46}{space 3}0.004{col 54}{space 4} .0103816{col 67}{space 3}  .052321
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .1069102{col 26}{space 2} .0021189{col 37}{space 1}   50.46{col 46}{space 3}0.000{col 54}{space 4} .1027266{col 67}{space 3} .1110938
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .01870315
+     {txt}sigma_e {c |} {res} .13877939
+         {txt}rho {c |} {res} .01783867{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,501
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       132
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0678{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.0503{col 63}{txt}avg{col 67}={col 69}{res}      34.1
+{txt}     overall = {res}0.0000{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}9{txt},{res}131{txt}){col 67}={col 70}{res}    34.27
+{txt}corr(u_i, Xb){col 16}= {res}-0.9891{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:132} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}global_nom_int_tr~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0221268{col 33}{space 2} .0085639{col 44}{space 1}    2.58{col 53}{space 3}0.011{col 61}{space 4} .0051854{col 74}{space 3} .0390681
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1182745{col 33}{space 2} .0099816{col 44}{space 1}   11.85{col 53}{space 3}0.000{col 61}{space 4} .0985285{col 74}{space 3} .1380206
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0211785{col 33}{space 2} .0115793{col 44}{space 1}    1.83{col 53}{space 3}0.070{col 61}{space 4} -.001728{col 74}{space 3} .0440851
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0174035{col 33}{space 2} .0187339{col 44}{space 1}    0.93{col 53}{space 3}0.355{col 61}{space 4}-.0196567{col 74}{space 3} .0544638
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000131{col 33}{space 2} .0000162{col 44}{space 1}   -0.81{col 53}{space 3}0.422{col 61}{space 4}-.0000452{col 74}{space 3}  .000019
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0492052{col 33}{space 2} .0160743{col 44}{space 1}    3.06{col 53}{space 3}0.003{col 61}{space 4} .0174063{col 74}{space 3} .0810041
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} -.037155{col 33}{space 2} .0247958{col 44}{space 1}   -1.50{col 53}{space 3}0.136{col 61}{space 4} -.086207{col 74}{space 3}  .011897
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} -.044975{col 33}{space 2} .0159016{col 44}{space 1}   -2.83{col 53}{space 3}0.005{col 61}{space 4}-.0764322{col 74}{space 3}-.0135179
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2} .0064916{col 33}{space 2} .0141382{col 44}{space 1}    0.46{col 53}{space 3}0.647{col 61}{space 4}-.0214771{col 74}{space 3} .0344603
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.359917{col 33}{space 2} .1863152{col 44}{space 1}   -7.30{col 53}{space 3}0.000{col 61}{space 4}-1.728493{col 74}{space 3}-.9913409
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .26393573
+            {txt}sigma_e {c |} {res} .13068355
+                {txt}rho {c |} {res} .80311113{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing USinfluence on global_nom_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     5,288
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       166
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0031{col 63}{txt}min{col 67}={col 69}{res}         4
+{txt}     between = {res}0.0026{col 63}{txt}avg{col 67}={col 69}{res}      31.9
+{txt}     overall = {res}0.0003{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}1{txt},{res}165{txt}){col 67}={col 70}{res}     7.46
+{txt}corr(u_i, Xb){col 16}= {res}-0.5153{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0070
+
+{txt}{ralign 78:(Std. Err. adjusted for {res:166} clusters in obs)}
+{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 14}{c |}{col 26}    Robust
+{col 1}global_nom..{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      t{col 46}   P>|t|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 1}USinfluence {c |}{col 14}{res}{space 2} .0321425{col 26}{space 2} .0117703{col 37}{space 1}    2.73{col 46}{space 3}0.007{col 54}{space 4} .0089027{col 67}{space 3} .0553823
+{txt}{space 7}_cons {c |}{col 14}{res}{space 2} .0943162{col 26}{space 2} .0023483{col 37}{space 1}   40.16{col 46}{space 3}0.000{col 54}{space 4} .0896797{col 67}{space 3} .0989528
+{txt}{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+     sigma_u {c |} {res} .02070828
+     {txt}sigma_e {c |} {res} .12850792
+         {txt}rho {c |} {res} .02531016{txt}   (fraction of variance due to u_i)
+{hline 13}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,501
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       132
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0839{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.1918{col 63}{txt}avg{col 67}={col 69}{res}      34.1
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}9{txt},{res}131{txt}){col 67}={col 70}{res}    22.73
+{txt}corr(u_i, Xb){col 16}= {res}-0.9916{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:132} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}global_nom_US_tra~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 8}USinfluence {c |}{col 21}{res}{space 2} .0229964{col 33}{space 2} .0086053{col 44}{space 1}    2.67{col 53}{space 3}0.008{col 61}{space 4} .0059731{col 74}{space 3} .0400196
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1022902{col 33}{space 2} .0094006{col 44}{space 1}   10.88{col 53}{space 3}0.000{col 61}{space 4} .0836935{col 74}{space 3} .1208869
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0757217{col 33}{space 2} .0119789{col 44}{space 1}    6.32{col 53}{space 3}0.000{col 61}{space 4} .0520247{col 74}{space 3} .0994187
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0547435{col 33}{space 2} .0172665{col 44}{space 1}    3.17{col 53}{space 3}0.002{col 61}{space 4} .0205862{col 74}{space 3} .0889007
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000123{col 33}{space 2} .0000166{col 44}{space 1}   -0.74{col 53}{space 3}0.458{col 61}{space 4}-.0000451{col 74}{space 3} .0000205
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0503751{col 33}{space 2} .0142216{col 44}{space 1}    3.54{col 53}{space 3}0.001{col 61}{space 4} .0222414{col 74}{space 3} .0785089
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0274712{col 33}{space 2} .0080824{col 44}{space 1}   -3.40{col 53}{space 3}0.001{col 61}{space 4}-.0434601{col 74}{space 3}-.0114823
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0381171{col 33}{space 2}  .013686{col 44}{space 1}   -2.79{col 53}{space 3}0.006{col 61}{space 4}-.0651913{col 74}{space 3}-.0110428
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2} .0039131{col 33}{space 2} .0112512{col 44}{space 1}    0.35{col 53}{space 3}0.729{col 61}{space 4}-.0183445{col 74}{space 3} .0261707
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.689225{col 33}{space 2} .1819982{col 44}{space 1}   -9.28{col 53}{space 3}0.000{col 61}{space 4}-2.049261{col 74}{space 3} -1.32919
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .31638803
+            {txt}sigma_e {c |} {res} .11762602
+                {txt}rho {c |} {res} .87856581{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on adj_int_trade
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,655
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       135
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0048{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0583{col 63}{txt}avg{col 67}={col 69}{res}      34.5
+{txt}     overall = {res}0.0012{col 63}{txt}max{col 67}={col 69}{res}        46
+
+{txt}{col 49}F({res}1{txt},{res}134{txt}){col 67}={col 70}{res}     7.82
+{txt}corr(u_i, Xb){col 16}= {res}-0.0229{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0059
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:135} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}   adj_int_trade{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2} -.105436{col 30}{space 2} .0377059{col 41}{space 1}   -2.80{col 50}{space 3}0.006{col 58}{space 4}-.1800118{col 71}{space 3}-.0308603
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .0970719{col 30}{space 2} .0003564{col 41}{space 1}  272.36{col 50}{space 3}0.000{col 58}{space 4} .0963669{col 71}{space 3} .0977768
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .17428713
+         {txt}sigma_e {c |} {res} .14802943
+             {txt}rho {c |} {res} .58092848{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,457
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.2925{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.1894{col 63}{txt}avg{col 67}={col 69}{res}      34.0
+{txt}     overall = {res}0.0279{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}9{txt},{res}130{txt}){col 67}={col 70}{res}    14.61
+{txt}corr(u_i, Xb){col 16}= {res}-0.8784{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}      adj_int_trade{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0335203{col 33}{space 2}  .030354{col 44}{space 1}   -1.10{col 53}{space 3}0.271{col 61}{space 4}-.0935722{col 74}{space 3} .0265315
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}-.1021981{col 33}{space 2} .0196861{col 44}{space 1}   -5.19{col 53}{space 3}0.000{col 61}{space 4}-.1411447{col 74}{space 3}-.0632515
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .2396249{col 33}{space 2} .0272483{col 44}{space 1}    8.79{col 53}{space 3}0.000{col 61}{space 4} .1857175{col 74}{space 3} .2935324
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0642662{col 33}{space 2} .0327986{col 44}{space 1}    1.96{col 53}{space 3}0.052{col 61}{space 4}-.0006219{col 74}{space 3} .1291543
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-5.22e-06{col 33}{space 2} .0000113{col 44}{space 1}   -0.46{col 53}{space 3}0.644{col 61}{space 4}-.0000275{col 74}{space 3} .0000171
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0474612{col 33}{space 2} .0209837{col 44}{space 1}   -2.26{col 53}{space 3}0.025{col 61}{space 4} -.088975{col 74}{space 3}-.0059474
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0147967{col 33}{space 2} .0543577{col 44}{space 1}   -0.27{col 53}{space 3}0.786{col 61}{space 4} -.122337{col 74}{space 3} .0927436
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} .0469356{col 33}{space 2}  .047705{col 44}{space 1}    0.98{col 53}{space 3}0.327{col 61}{space 4} -.047443{col 74}{space 3} .1413142
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2} .0418419{col 33}{space 2} .0320415{col 44}{space 1}    1.31{col 53}{space 3}0.194{col 61}{space 4}-.0215484{col 74}{space 3} .1052323
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-.9539168{col 33}{space 2} .3312123{col 44}{space 1}   -2.88{col 53}{space 3}0.005{col 61}{space 4}-1.609181{col 74}{space 3}-.2986529
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .33286946
+            {txt}sigma_e {c |} {res} .10644811
+                {txt}rho {c |} {res} .90722266{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on adj_US_trade
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,594
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       135
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0016{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0045{col 63}{txt}avg{col 67}={col 69}{res}      34.0
+{txt}     overall = {res}0.0009{col 63}{txt}max{col 67}={col 69}{res}        46
+
+{txt}{col 49}F({res}1{txt},{res}134{txt}){col 67}={col 70}{res}    12.17
+{txt}corr(u_i, Xb){col 16}= {res}-0.0010{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0007
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:135} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}    adj_US_trade{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0097081{col 30}{space 2} .0027823{col 41}{space 1}   -3.49{col 50}{space 3}0.001{col 58}{space 4} -.015211{col 71}{space 3}-.0042052
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .0136231{col 30}{space 2} .0000266{col 41}{space 1}  511.22{col 50}{space 3}0.000{col 58}{space 4} .0135704{col 71}{space 3} .0136758
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .02153299
+         {txt}sigma_e {c |} {res} .02387049
+             {txt}rho {c |} {res} .44865321{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,397
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.2176{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0843{col 63}{txt}avg{col 67}={col 69}{res}      33.6
+{txt}     overall = {res}0.0090{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9167{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}       adj_US_trade{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0002091{col 33}{space 2} .0022584{col 44}{space 1}   -0.09{col 53}{space 3}0.926{col 61}{space 4}-.0046772{col 74}{space 3} .0042589
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}-.0102677{col 33}{space 2} .0036889{col 44}{space 1}   -2.78{col 53}{space 3}0.006{col 61}{space 4}-.0175657{col 74}{space 3}-.0029696
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0386513{col 33}{space 2} .0043686{col 44}{space 1}    8.85{col 53}{space 3}0.000{col 61}{space 4} .0300084{col 74}{space 3} .0472941
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0101767{col 33}{space 2} .0025522{col 44}{space 1}    3.99{col 53}{space 3}0.000{col 61}{space 4} .0051275{col 74}{space 3} .0152258
+{txt}{space 11}economic {c |}{col 21}{res}{space 2} 1.03e-06{col 33}{space 2} 1.80e-06{col 44}{space 1}    0.57{col 53}{space 3}0.570{col 61}{space 4}-2.54e-06{col 74}{space 3} 4.59e-06
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0090767{col 33}{space 2} .0043442{col 44}{space 1}   -2.09{col 53}{space 3}0.039{col 61}{space 4}-.0176712{col 74}{space 3}-.0004822
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0052113{col 33}{space 2} .0189788{col 44}{space 1}   -0.27{col 53}{space 3}0.784{col 61}{space 4}-.0427585{col 74}{space 3}  .032336
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} .0091433{col 33}{space 2}  .009104{col 44}{space 1}    1.00{col 53}{space 3}0.317{col 61}{space 4}-.0088679{col 74}{space 3} .0271544
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0025285{col 33}{space 2} .0026487{col 44}{space 1}   -0.95{col 53}{space 3}0.342{col 61}{space 4}-.0077686{col 74}{space 3} .0027116
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-.2220168{col 33}{space 2} .0556762{col 44}{space 1}   -3.99{col 53}{space 3}0.000{col 61}{space 4}-.3321655{col 74}{space 3}-.1118681
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .05437869
+            {txt}sigma_e {c |} {res} .01960237
+                {txt}rho {c |} {res} .88499878{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on adj_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,395
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       133
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0005{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.0730{col 63}{txt}avg{col 67}={col 69}{res}      33.0
+{txt}     overall = {res}0.0008{col 63}{txt}max{col 67}={col 69}{res}        44
+
+{txt}{col 49}F({res}1{txt},{res}132{txt}){col 67}={col 70}{res}     3.19
+{txt}corr(u_i, Xb){col 16}= {res}0.0421{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0765
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:133} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}adj_int_trade_~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0561953{col 30}{space 2} .0314706{col 41}{space 1}   -1.79{col 50}{space 3}0.076{col 58}{space 4}-.1184472{col 71}{space 3} .0060565
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .1161941{col 30}{space 2} .0002363{col 41}{space 1}  491.73{col 50}{space 3}0.000{col 58}{space 4} .1157267{col 71}{space 3} .1166615
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .03729025
+         {txt}sigma_e {c |} {res} .21810967
+             {txt}rho {c |} {res} .02840063{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,214
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0226{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0477{col 63}{txt}avg{col 67}={col 69}{res}      32.2
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9858{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}adj_int_trade_gro~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0401732{col 33}{space 2} .0311821{col 44}{space 1}   -1.29{col 53}{space 3}0.200{col 61}{space 4}-.1018632{col 74}{space 3} .0215167
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}    .0966{col 33}{space 2}  .011125{col 44}{space 1}    8.68{col 53}{space 3}0.000{col 61}{space 4} .0745905{col 74}{space 3} .1186095
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0777149{col 33}{space 2} .0166721{col 44}{space 1}    4.66{col 53}{space 3}0.000{col 61}{space 4} .0447311{col 74}{space 3} .1106987
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.1975175{col 33}{space 2} .0153432{col 44}{space 1}  -12.87{col 53}{space 3}0.000{col 61}{space 4}-.2278722{col 74}{space 3}-.1671629
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-3.35e-06{col 33}{space 2}   .00002{col 44}{space 1}   -0.17{col 53}{space 3}0.867{col 61}{space 4}-.0000429{col 74}{space 3} .0000362
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0071495{col 33}{space 2} .0211303{col 44}{space 1}    0.34{col 53}{space 3}0.736{col 61}{space 4}-.0346541{col 74}{space 3} .0489532
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} .1070134{col 33}{space 2} .1443863{col 44}{space 1}    0.74{col 53}{space 3}0.460{col 61}{space 4}-.1786377{col 74}{space 3} .3926644
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0524678{col 33}{space 2} .0260008{col 44}{space 1}   -2.02{col 53}{space 3}0.046{col 61}{space 4}-.1039072{col 74}{space 3}-.0010284
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0584811{col 33}{space 2}  .035024{col 44}{space 1}   -1.67{col 53}{space 3}0.097{col 61}{space 4}-.1277719{col 74}{space 3} .0108096
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.629973{col 33}{space 2} .2110934{col 44}{space 1}   -7.72{col 53}{space 3}0.000{col 61}{space 4}-2.047596{col 74}{space 3} -1.21235
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .31119012
+            {txt}sigma_e {c |} {res} .21647783
+                {txt}rho {c |} {res} .67388992{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on adj_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,225
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       133
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0000{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0060{col 63}{txt}avg{col 67}={col 69}{res}      31.8
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        45
+
+{txt}{col 49}F({res}1{txt},{res}132{txt}){col 67}={col 70}{res}     0.03
+{txt}corr(u_i, Xb){col 16}= {res}0.0284{txt}{col 49}Prob > F{col 67}={col 73}{res}0.8670
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:133} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}adj_US_trade_g~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0107759{col 30}{space 2} .0642223{col 41}{space 1}   -0.17{col 50}{space 3}0.867{col 58}{space 4}-.1378139{col 71}{space 3} .1162621
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .1293001{col 30}{space 2} .0005016{col 41}{space 1}  257.77{col 50}{space 3}0.000{col 58}{space 4} .1283079{col 71}{space 3} .1302924
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res}  .1410691
+         {txt}sigma_e {c |} {res} .40043826
+             {txt}rho {c |} {res} .11040416{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,047
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       129
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0137{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0097{col 63}{txt}avg{col 67}={col 69}{res}      31.4
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,128)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9519{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:129} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}adj_US_trade_growth{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2} .0034412{col 33}{space 2} .0654173{col 44}{space 1}    0.05{col 53}{space 3}0.958{col 61}{space 4}-.1259982{col 74}{space 3} .1328805
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1018735{col 33}{space 2} .0200457{col 44}{space 1}    5.08{col 53}{space 3}0.000{col 61}{space 4} .0622097{col 74}{space 3} .1415373
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0869243{col 33}{space 2} .0290813{col 44}{space 1}    2.99{col 53}{space 3}0.003{col 61}{space 4}  .029382{col 74}{space 3} .1444666
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.7745429{col 33}{space 2} .0204556{col 44}{space 1}  -37.86{col 53}{space 3}0.000{col 61}{space 4}-.8150179{col 74}{space 3} -.734068
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-8.43e-06{col 33}{space 2} .0000287{col 44}{space 1}   -0.29{col 53}{space 3}0.770{col 61}{space 4}-.0000653{col 74}{space 3} .0000484
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0256445{col 33}{space 2} .0339621{col 44}{space 1}   -0.76{col 53}{space 3}0.452{col 61}{space 4}-.0928443{col 74}{space 3} .0415552
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.1784259{col 33}{space 2} .0974303{col 44}{space 1}   -1.83{col 53}{space 3}0.069{col 61}{space 4}-.3712083{col 74}{space 3} .0143565
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.1462733{col 33}{space 2} .0623476{col 44}{space 1}   -2.35{col 53}{space 3}0.021{col 61}{space 4}-.2696387{col 74}{space 3}-.0229079
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.1867023{col 33}{space 2} .0724498{col 44}{space 1}   -2.58{col 53}{space 3}0.011{col 61}{space 4}-.3300567{col 74}{space 3}-.0433479
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.757842{col 33}{space 2} .3663707{col 44}{space 1}   -4.80{col 53}{space 3}0.000{col 61}{space 4}-2.482769{col 74}{space 3}-1.032915
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .33508476
+            {txt}sigma_e {c |} {res} .39509424
+                {txt}rho {c |} {res} .41836677{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on nom_int_trade
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     5,281
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       161
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0006{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0005{col 63}{txt}avg{col 67}={col 69}{res}      32.8
+{txt}     overall = {res}0.0006{col 63}{txt}max{col 67}={col 69}{res}        46
+
+{txt}{col 49}F({res}1{txt},{res}160{txt}){col 67}={col 70}{res}     6.40
+{txt}corr(u_i, Xb){col 16}= {res}0.0078{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0124
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:161} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}   nom_int_trade{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-8074.804{col 30}{space 2} 3191.287{col 41}{space 1}   -2.53{col 50}{space 3}0.012{col 58}{space 4}-14377.28{col 71}{space 3}-1772.326
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} 11164.86{col 30}{space 2} 28.40191{col 41}{space 1}  393.10{col 50}{space 3}0.000{col 58}{space 4} 11108.77{col 71}{space 3} 11220.95
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} 23309.071
+         {txt}sigma_e {c |} {res} 30725.039
+             {txt}rho {c |} {res} .36529139{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,457
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0524{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.0232{col 63}{txt}avg{col 67}={col 69}{res}      34.0
+{txt}     overall = {res}0.0218{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{txt}{col 49}F({res}9{txt},{res}130{txt}){col 67}={col 70}{res}     4.59
+{txt}corr(u_i, Xb){col 16}= {res}-0.5796{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}      nom_int_trade{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-3314.842{col 33}{space 2} 3093.942{col 44}{space 1}   -1.07{col 53}{space 3}0.286{col 61}{space 4}-9435.835{col 74}{space 3} 2806.152
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}-9884.346{col 33}{space 2} 6096.342{col 44}{space 1}   -1.62{col 53}{space 3}0.107{col 61}{space 4}-21945.23{col 74}{space 3} 2176.538
+{txt}ln_total_population {c |}{col 21}{res}{space 2} 24282.64{col 33}{space 2} 4408.104{col 44}{space 1}    5.51{col 53}{space 3}0.000{col 61}{space 4} 15561.73{col 74}{space 3} 33003.54
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-5420.922{col 33}{space 2} 7193.494{col 44}{space 1}   -0.75{col 53}{space 3}0.452{col 61}{space 4}-19652.39{col 74}{space 3} 8810.546
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-5.423904{col 33}{space 2} 4.777233{col 44}{space 1}   -1.14{col 53}{space 3}0.258{col 61}{space 4}-14.87509{col 74}{space 3} 4.027279
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-6116.765{col 33}{space 2} 3151.571{col 44}{space 1}   -1.94{col 53}{space 3}0.054{col 61}{space 4}-12351.77{col 74}{space 3} 118.2422
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-640.3096{col 33}{space 2} 5157.764{col 44}{space 1}   -0.12{col 53}{space 3}0.901{col 61}{space 4}-10844.33{col 74}{space 3} 9563.709
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} 986.1437{col 33}{space 2} 6411.808{col 44}{space 1}    0.15{col 53}{space 3}0.878{col 61}{space 4}-11698.85{col 74}{space 3} 13671.14
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-2106.919{col 33}{space 2} 2835.599{col 44}{space 1}   -0.74{col 53}{space 3}0.459{col 61}{space 4}-7716.811{col 74}{space 3} 3502.974
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-98308.05{col 33}{space 2} 73945.23{col 44}{space 1}   -1.33{col 53}{space 3}0.186{col 61}{space 4}-244599.9{col 74}{space 3} 47983.74
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} 30770.048
+            {txt}sigma_e {c |} {res} 29103.002
+                {txt}rho {c |} {res} .52782145{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on nom_US_trade
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     5,215
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       161
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0004{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0000{col 63}{txt}avg{col 67}={col 69}{res}      32.4
+{txt}     overall = {res}0.0003{col 63}{txt}max{col 67}={col 69}{res}        46
+
+{txt}{col 49}F({res}1{txt},{res}160{txt}){col 67}={col 70}{res}     3.39
+{txt}corr(u_i, Xb){col 16}= {res}0.0034{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0673
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:161} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}    nom_US_trade{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2} -1455.67{col 30}{space 2} 790.2513{col 41}{space 1}   -1.84{col 50}{space 3}0.067{col 58}{space 4}-3016.339{col 71}{space 3} 104.9984
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} 1886.131{col 30}{space 2} 7.122112{col 41}{space 1}  264.83{col 50}{space 3}0.000{col 58}{space 4} 1872.065{col 71}{space 3} 1900.196
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} 5138.5183
+         {txt}sigma_e {c |} {res} 6927.7104
+             {txt}rho {c |} {res} .35490918{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,397
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0414{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0852{col 63}{txt}avg{col 67}={col 69}{res}      33.6
+{txt}     overall = {res}0.0482{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.7146{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}       nom_US_trade{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-300.9021{col 33}{space 2} 756.5656{col 44}{space 1}   -0.40{col 53}{space 3}0.691{col 61}{space 4}-1797.677{col 74}{space 3} 1195.872
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}-302.5014{col 33}{space 2} 884.3718{col 44}{space 1}   -0.34{col 53}{space 3}0.733{col 61}{space 4}-2052.125{col 74}{space 3} 1447.122
+{txt}ln_total_population {c |}{col 21}{res}{space 2}  5435.29{col 33}{space 2} 1537.291{col 44}{space 1}    3.54{col 53}{space 3}0.001{col 61}{space 4} 2393.944{col 74}{space 3} 8476.636
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-691.2028{col 33}{space 2} 1168.384{col 44}{space 1}   -0.59{col 53}{space 3}0.555{col 61}{space 4} -3002.71{col 74}{space 3} 1620.305
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.8236284{col 33}{space 2} .6424059{col 44}{space 1}   -1.28{col 53}{space 3}0.202{col 61}{space 4}-2.094552{col 74}{space 3} .4472949
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-1265.946{col 33}{space 2} 871.3235{col 44}{space 1}   -1.45{col 53}{space 3}0.149{col 61}{space 4}-2989.755{col 74}{space 3} 457.8633
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-1372.544{col 33}{space 2} 2538.128{col 44}{space 1}   -0.54{col 53}{space 3}0.590{col 61}{space 4}-6393.926{col 74}{space 3} 3648.838
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2} 3786.502{col 33}{space 2} 4755.938{col 44}{space 1}    0.80{col 53}{space 3}0.427{col 61}{space 4}-5622.553{col 74}{space 3} 13195.56
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-404.2964{col 33}{space 2} 893.2513{col 44}{space 1}   -0.45{col 53}{space 3}0.652{col 61}{space 4}-2171.487{col 74}{space 3} 1362.894
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-43293.51{col 33}{space 2} 15614.94{col 44}{space 1}   -2.77{col 53}{space 3}0.006{col 61}{space 4} -74185.8{col 74}{space 3}-12401.22
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} 8235.8998
+            {txt}sigma_e {c |} {res} 6791.0206
+                {txt}rho {c |} {res} .59527189{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on nom_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,968
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       161
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0005{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0035{col 63}{txt}avg{col 67}={col 69}{res}      30.9
+{txt}     overall = {res}0.0008{col 63}{txt}max{col 67}={col 69}{res}        44
+
+{txt}{col 49}F({res}1{txt},{res}160{txt}){col 67}={col 70}{res}     3.36
+{txt}corr(u_i, Xb){col 16}= {res}0.0260{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0686
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:161} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}nom_int_trade_~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0599116{col 30}{space 2} .0326719{col 41}{space 1}   -1.83{col 50}{space 3}0.069{col 58}{space 4}-.1244353{col 71}{space 3} .0046122
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .1086147{col 30}{space 2} .0002302{col 41}{space 1}  471.88{col 50}{space 3}0.000{col 58}{space 4} .1081601{col 71}{space 3} .1090693
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res}  .0838389
+         {txt}sigma_e {c |} {res} .22067385
+             {txt}rho {c |} {res} .12613454{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,233
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0319{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0038{col 63}{txt}avg{col 67}={col 69}{res}      32.3
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9669{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}nom_int_trade_gro~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0598195{col 33}{space 2} .0320366{col 44}{space 1}   -1.87{col 53}{space 3}0.064{col 61}{space 4}   -.1232{col 74}{space 3} .0035611
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1249648{col 33}{space 2} .0113305{col 44}{space 1}   11.03{col 53}{space 3}0.000{col 61}{space 4} .1025488{col 74}{space 3} .1473807
+{txt}ln_total_population {c |}{col 21}{res}{space 2}-.0131116{col 33}{space 2} .0180061{col 44}{space 1}   -0.73{col 53}{space 3}0.468{col 61}{space 4}-.0487346{col 74}{space 3} .0225114
+{txt}{space 16}war {c |}{col 21}{res}{space 2} -.189853{col 33}{space 2} .0173824{col 44}{space 1}  -10.92{col 53}{space 3}0.000{col 61}{space 4}-.2242419{col 74}{space 3} -.155464
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-4.93e-06{col 33}{space 2}  .000013{col 44}{space 1}   -0.38{col 53}{space 3}0.705{col 61}{space 4}-.0000306{col 74}{space 3} .0000207
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0031249{col 33}{space 2} .0207468{col 44}{space 1}    0.15{col 53}{space 3}0.881{col 61}{space 4}-.0379202{col 74}{space 3} .0441701
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} .0430303{col 33}{space 2} .2086054{col 44}{space 1}    0.21{col 53}{space 3}0.837{col 61}{space 4}-.3696705{col 74}{space 3} .4557311
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0915678{col 33}{space 2}  .028655{col 44}{space 1}   -3.20{col 53}{space 3}0.002{col 61}{space 4}-.1482583{col 74}{space 3}-.0348774
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0841759{col 33}{space 2}  .032998{col 44}{space 1}   -2.55{col 53}{space 3}0.012{col 61}{space 4}-.1494586{col 74}{space 3}-.0188932
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.124824{col 33}{space 2} .2173269{col 44}{space 1}   -5.18{col 53}{space 3}0.000{col 61}{space 4}-1.554779{col 74}{space 3}-.6948689
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .23414664
+            {txt}sigma_e {c |} {res} .21297192
+                {txt}rho {c |} {res} .54725221{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on nom_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,751
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       160
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0000{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0026{col 63}{txt}avg{col 67}={col 69}{res}      29.7
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        45
+
+{txt}{col 49}F({res}1{txt},{res}159{txt}){col 67}={col 70}{res}     0.10
+{txt}corr(u_i, Xb){col 16}= {res}0.0243{txt}{col 49}Prob > F{col 67}={col 73}{res}0.7575
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:160} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}nom_US_trade_g~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0192062{col 30}{space 2}  .062103{col 41}{space 1}   -0.31{col 50}{space 3}0.758{col 58}{space 4}-.1418594{col 71}{space 3}  .103447
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2}  .121144{col 30}{space 2} .0004575{col 41}{space 1}  264.79{col 50}{space 3}0.000{col 58}{space 4} .1202405{col 71}{space 3} .1220476
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .13889843
+         {txt}sigma_e {c |} {res} .39870122
+             {txt}rho {c |} {res} .10823105{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,063
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       129
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0172{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0158{col 63}{txt}avg{col 67}={col 69}{res}      31.5
+{txt}     overall = {res}0.0002{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,128)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9094{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:129} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}nom_US_trade_growth{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0167542{col 33}{space 2} .0662524{col 44}{space 1}   -0.25{col 53}{space 3}0.801{col 61}{space 4} -.147846{col 74}{space 3} .1143375
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}  .125417{col 33}{space 2} .0213013{col 44}{space 1}    5.89{col 53}{space 3}0.000{col 61}{space 4} .0832687{col 74}{space 3} .1675654
+{txt}ln_total_population {c |}{col 21}{res}{space 2}-.0059481{col 33}{space 2} .0315152{col 44}{space 1}   -0.19{col 53}{space 3}0.851{col 61}{space 4}-.0683063{col 74}{space 3}   .05641
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.6648548{col 33}{space 2} .0231054{col 44}{space 1}  -28.77{col 53}{space 3}0.000{col 61}{space 4}-.7105728{col 74}{space 3}-.6191367
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000119{col 33}{space 2} .0000229{col 44}{space 1}   -0.52{col 53}{space 3}0.605{col 61}{space 4}-.0000573{col 74}{space 3} .0000335
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0429053{col 33}{space 2} .0323583{col 44}{space 1}   -1.33{col 53}{space 3}0.187{col 61}{space 4}-.1069317{col 74}{space 3} .0211211
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.2240142{col 33}{space 2} .0442791{col 44}{space 1}   -5.06{col 53}{space 3}0.000{col 61}{space 4}-.3116279{col 74}{space 3}-.1364004
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.1623377{col 33}{space 2} .0543634{col 44}{space 1}   -2.99{col 53}{space 3}0.003{col 61}{space 4} -.269905{col 74}{space 3}-.0547704
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.2165371{col 33}{space 2} .0723694{col 44}{space 1}   -2.99{col 53}{space 3}0.003{col 61}{space 4}-.3597322{col 74}{space 3}-.0733419
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2} -1.18151{col 33}{space 2} .4095467{col 44}{space 1}   -2.88{col 53}{space 3}0.005{col 61}{space 4}-1.991868{col 74}{space 3}-.3711522
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .25523771
+            {txt}sigma_e {c |} {res} .38737215
+                {txt}rho {c |} {res} .30271951{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on adj_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,395
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       133
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0005{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.0730{col 63}{txt}avg{col 67}={col 69}{res}      33.0
+{txt}     overall = {res}0.0008{col 63}{txt}max{col 67}={col 69}{res}        44
+
+{txt}{col 49}F({res}1{txt},{res}132{txt}){col 67}={col 70}{res}     3.19
+{txt}corr(u_i, Xb){col 16}= {res}0.0421{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0765
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:133} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}adj_int_trade_~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0561953{col 30}{space 2} .0314706{col 41}{space 1}   -1.79{col 50}{space 3}0.076{col 58}{space 4}-.1184472{col 71}{space 3} .0060565
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .1161941{col 30}{space 2} .0002363{col 41}{space 1}  491.73{col 50}{space 3}0.000{col 58}{space 4} .1157267{col 71}{space 3} .1166615
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .03729025
+         {txt}sigma_e {c |} {res} .21810967
+             {txt}rho {c |} {res} .02840063{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,214
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0226{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0477{col 63}{txt}avg{col 67}={col 69}{res}      32.2
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9858{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}adj_int_trade_gro~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0401732{col 33}{space 2} .0311821{col 44}{space 1}   -1.29{col 53}{space 3}0.200{col 61}{space 4}-.1018632{col 74}{space 3} .0215167
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}    .0966{col 33}{space 2}  .011125{col 44}{space 1}    8.68{col 53}{space 3}0.000{col 61}{space 4} .0745905{col 74}{space 3} .1186095
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0777149{col 33}{space 2} .0166721{col 44}{space 1}    4.66{col 53}{space 3}0.000{col 61}{space 4} .0447311{col 74}{space 3} .1106987
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.1975175{col 33}{space 2} .0153432{col 44}{space 1}  -12.87{col 53}{space 3}0.000{col 61}{space 4}-.2278722{col 74}{space 3}-.1671629
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-3.35e-06{col 33}{space 2}   .00002{col 44}{space 1}   -0.17{col 53}{space 3}0.867{col 61}{space 4}-.0000429{col 74}{space 3} .0000362
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0071495{col 33}{space 2} .0211303{col 44}{space 1}    0.34{col 53}{space 3}0.736{col 61}{space 4}-.0346541{col 74}{space 3} .0489532
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} .1070134{col 33}{space 2} .1443863{col 44}{space 1}    0.74{col 53}{space 3}0.460{col 61}{space 4}-.1786377{col 74}{space 3} .3926644
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0524678{col 33}{space 2} .0260008{col 44}{space 1}   -2.02{col 53}{space 3}0.046{col 61}{space 4}-.1039072{col 74}{space 3}-.0010284
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0584811{col 33}{space 2}  .035024{col 44}{space 1}   -1.67{col 53}{space 3}0.097{col 61}{space 4}-.1277719{col 74}{space 3} .0108096
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.629973{col 33}{space 2} .2110934{col 44}{space 1}   -7.72{col 53}{space 3}0.000{col 61}{space 4}-2.047596{col 74}{space 3} -1.21235
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .31119012
+            {txt}sigma_e {c |} {res} .21647783
+                {txt}rho {c |} {res} .67388992{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on adj_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,225
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       133
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0000{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0060{col 63}{txt}avg{col 67}={col 69}{res}      31.8
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        45
+
+{txt}{col 49}F({res}1{txt},{res}132{txt}){col 67}={col 70}{res}     0.03
+{txt}corr(u_i, Xb){col 16}= {res}0.0284{txt}{col 49}Prob > F{col 67}={col 73}{res}0.8670
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:133} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}adj_US_trade_g~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0107759{col 30}{space 2} .0642223{col 41}{space 1}   -0.17{col 50}{space 3}0.867{col 58}{space 4}-.1378139{col 71}{space 3} .1162621
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .1293001{col 30}{space 2} .0005016{col 41}{space 1}  257.77{col 50}{space 3}0.000{col 58}{space 4} .1283079{col 71}{space 3} .1302924
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res}  .1410691
+         {txt}sigma_e {c |} {res} .40043826
+             {txt}rho {c |} {res} .11040416{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,047
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       129
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0137{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0097{col 63}{txt}avg{col 67}={col 69}{res}      31.4
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,128)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9519{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:129} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}adj_US_trade_growth{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2} .0034412{col 33}{space 2} .0654173{col 44}{space 1}    0.05{col 53}{space 3}0.958{col 61}{space 4}-.1259982{col 74}{space 3} .1328805
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1018735{col 33}{space 2} .0200457{col 44}{space 1}    5.08{col 53}{space 3}0.000{col 61}{space 4} .0622097{col 74}{space 3} .1415373
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0869243{col 33}{space 2} .0290813{col 44}{space 1}    2.99{col 53}{space 3}0.003{col 61}{space 4}  .029382{col 74}{space 3} .1444666
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.7745429{col 33}{space 2} .0204556{col 44}{space 1}  -37.86{col 53}{space 3}0.000{col 61}{space 4}-.8150179{col 74}{space 3} -.734068
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-8.43e-06{col 33}{space 2} .0000287{col 44}{space 1}   -0.29{col 53}{space 3}0.770{col 61}{space 4}-.0000653{col 74}{space 3} .0000484
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0256445{col 33}{space 2} .0339621{col 44}{space 1}   -0.76{col 53}{space 3}0.452{col 61}{space 4}-.0928443{col 74}{space 3} .0415552
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.1784259{col 33}{space 2} .0974303{col 44}{space 1}   -1.83{col 53}{space 3}0.069{col 61}{space 4}-.3712083{col 74}{space 3} .0143565
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.1462733{col 33}{space 2} .0623476{col 44}{space 1}   -2.35{col 53}{space 3}0.021{col 61}{space 4}-.2696387{col 74}{space 3}-.0229079
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.1867023{col 33}{space 2} .0724498{col 44}{space 1}   -2.58{col 53}{space 3}0.011{col 61}{space 4}-.3300567{col 74}{space 3}-.0433479
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.757842{col 33}{space 2} .3663707{col 44}{space 1}   -4.80{col 53}{space 3}0.000{col 61}{space 4}-2.482769{col 74}{space 3}-1.032915
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .33508476
+            {txt}sigma_e {c |} {res} .39509424
+                {txt}rho {c |} {res} .41836677{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on nom_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,968
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       161
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0005{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0035{col 63}{txt}avg{col 67}={col 69}{res}      30.9
+{txt}     overall = {res}0.0008{col 63}{txt}max{col 67}={col 69}{res}        44
+
+{txt}{col 49}F({res}1{txt},{res}160{txt}){col 67}={col 70}{res}     3.36
+{txt}corr(u_i, Xb){col 16}= {res}0.0260{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0686
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:161} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}nom_int_trade_~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0599116{col 30}{space 2} .0326719{col 41}{space 1}   -1.83{col 50}{space 3}0.069{col 58}{space 4}-.1244353{col 71}{space 3} .0046122
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .1086147{col 30}{space 2} .0002302{col 41}{space 1}  471.88{col 50}{space 3}0.000{col 58}{space 4} .1081601{col 71}{space 3} .1090693
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res}  .0838389
+         {txt}sigma_e {c |} {res} .22067385
+             {txt}rho {c |} {res} .12613454{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,233
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       131
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0319{col 63}{txt}min{col 67}={col 69}{res}        12
+{txt}     between = {res}0.0038{col 63}{txt}avg{col 67}={col 69}{res}      32.3
+{txt}     overall = {res}0.0004{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{col 49}{help j_robustsingular##|_new:F(8,130)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9669{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:131} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}nom_int_trade_gro~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0598195{col 33}{space 2} .0320366{col 44}{space 1}   -1.87{col 53}{space 3}0.064{col 61}{space 4}   -.1232{col 74}{space 3} .0035611
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1249648{col 33}{space 2} .0113305{col 44}{space 1}   11.03{col 53}{space 3}0.000{col 61}{space 4} .1025488{col 74}{space 3} .1473807
+{txt}ln_total_population {c |}{col 21}{res}{space 2}-.0131116{col 33}{space 2} .0180061{col 44}{space 1}   -0.73{col 53}{space 3}0.468{col 61}{space 4}-.0487346{col 74}{space 3} .0225114
+{txt}{space 16}war {c |}{col 21}{res}{space 2} -.189853{col 33}{space 2} .0173824{col 44}{space 1}  -10.92{col 53}{space 3}0.000{col 61}{space 4}-.2242419{col 74}{space 3} -.155464
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-4.93e-06{col 33}{space 2}  .000013{col 44}{space 1}   -0.38{col 53}{space 3}0.705{col 61}{space 4}-.0000306{col 74}{space 3} .0000207
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0031249{col 33}{space 2} .0207468{col 44}{space 1}    0.15{col 53}{space 3}0.881{col 61}{space 4}-.0379202{col 74}{space 3} .0441701
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2} .0430303{col 33}{space 2} .2086054{col 44}{space 1}    0.21{col 53}{space 3}0.837{col 61}{space 4}-.3696705{col 74}{space 3} .4557311
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0915678{col 33}{space 2}  .028655{col 44}{space 1}   -3.20{col 53}{space 3}0.002{col 61}{space 4}-.1482583{col 74}{space 3}-.0348774
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0841759{col 33}{space 2}  .032998{col 44}{space 1}   -2.55{col 53}{space 3}0.012{col 61}{space 4}-.1494586{col 74}{space 3}-.0188932
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.124824{col 33}{space 2} .2173269{col 44}{space 1}   -5.18{col 53}{space 3}0.000{col 61}{space 4}-1.554779{col 74}{space 3}-.6948689
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .23414664
+            {txt}sigma_e {c |} {res} .21297192
+                {txt}rho {c |} {res} .54725221{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on nom_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,751
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       160
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0000{col 63}{txt}min{col 67}={col 69}{res}         1
+{txt}     between = {res}0.0026{col 63}{txt}avg{col 67}={col 69}{res}      29.7
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        45
+
+{txt}{col 49}F({res}1{txt},{res}159{txt}){col 67}={col 70}{res}     0.10
+{txt}corr(u_i, Xb){col 16}= {res}0.0243{txt}{col 49}Prob > F{col 67}={col 73}{res}0.7575
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:160} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}nom_US_trade_g~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.0192062{col 30}{space 2}  .062103{col 41}{space 1}   -0.31{col 50}{space 3}0.758{col 58}{space 4}-.1418594{col 71}{space 3}  .103447
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2}  .121144{col 30}{space 2} .0004575{col 41}{space 1}  264.79{col 50}{space 3}0.000{col 58}{space 4} .1202405{col 71}{space 3} .1220476
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .13889843
+         {txt}sigma_e {c |} {res} .39870122
+             {txt}rho {c |} {res} .10823105{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,063
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       129
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0172{col 63}{txt}min{col 67}={col 69}{res}         3
+{txt}     between = {res}0.0158{col 63}{txt}avg{col 67}={col 69}{res}      31.5
+{txt}     overall = {res}0.0002{col 63}{txt}max{col 67}={col 69}{res}        43
+
+{col 49}{help j_robustsingular##|_new:F(8,128)}{col 67}{txt}={col 70}{res}        .
+{txt}corr(u_i, Xb){col 16}= {res}-0.9094{txt}{col 49}Prob > F{col 67}={col 73}{res}     .
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:129} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}nom_US_trade_growth{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0167542{col 33}{space 2} .0662524{col 44}{space 1}   -0.25{col 53}{space 3}0.801{col 61}{space 4} -.147846{col 74}{space 3} .1143375
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2}  .125417{col 33}{space 2} .0213013{col 44}{space 1}    5.89{col 53}{space 3}0.000{col 61}{space 4} .0832687{col 74}{space 3} .1675654
+{txt}ln_total_population {c |}{col 21}{res}{space 2}-.0059481{col 33}{space 2} .0315152{col 44}{space 1}   -0.19{col 53}{space 3}0.851{col 61}{space 4}-.0683063{col 74}{space 3}   .05641
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.6648548{col 33}{space 2} .0231054{col 44}{space 1}  -28.77{col 53}{space 3}0.000{col 61}{space 4}-.7105728{col 74}{space 3}-.6191367
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000119{col 33}{space 2} .0000229{col 44}{space 1}   -0.52{col 53}{space 3}0.605{col 61}{space 4}-.0000573{col 74}{space 3} .0000335
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}-.0429053{col 33}{space 2} .0323583{col 44}{space 1}   -1.33{col 53}{space 3}0.187{col 61}{space 4}-.1069317{col 74}{space 3} .0211211
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.2240142{col 33}{space 2} .0442791{col 44}{space 1}   -5.06{col 53}{space 3}0.000{col 61}{space 4}-.3116279{col 74}{space 3}-.1364004
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.1623377{col 33}{space 2} .0543634{col 44}{space 1}   -2.99{col 53}{space 3}0.003{col 61}{space 4} -.269905{col 74}{space 3}-.0547704
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.2165371{col 33}{space 2} .0723694{col 44}{space 1}   -2.99{col 53}{space 3}0.003{col 61}{space 4}-.3597322{col 74}{space 3}-.0733419
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2} -1.18151{col 33}{space 2} .4095467{col 44}{space 1}   -2.88{col 53}{space 3}0.005{col 61}{space 4}-1.991868{col 74}{space 3}-.3711522
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .25523771
+            {txt}sigma_e {c |} {res} .38737215
+                {txt}rho {c |} {res} .30271951{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on global_adj_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     7,304
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       166
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0031{col 63}{txt}min{col 67}={col 69}{res}        44
+{txt}     between = {res}0.0000{col 63}{txt}avg{col 67}={col 69}{res}      44.0
+{txt}     overall = {res}0.0030{col 63}{txt}max{col 67}={col 69}{res}        44
+
+{txt}{col 49}F({res}1{txt},{res}165{txt}){col 67}={col 70}{res}    19.75
+{txt}corr(u_i, Xb){col 16}= {res}-0.1438{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:166} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}global_adj_int~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.1193154{col 30}{space 2} .0268473{col 41}{space 1}   -4.44{col 50}{space 3}0.000{col 58}{space 4} -.172324{col 71}{space 3}-.0663069
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2}    .1127{col 30}{space 2} .0002095{col 41}{space 1}  537.91{col 50}{space 3}0.000{col 58}{space 4} .1122863{col 71}{space 3} .1131136
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .00151391
+         {txt}sigma_e {c |} {res} .18807212
+             {txt}rho {c |} {res} .00006479{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,501
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       132
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0981{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.2555{col 63}{txt}avg{col 67}={col 69}{res}      34.1
+{txt}     overall = {res}0.0007{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}9{txt},{res}131{txt}){col 67}={col 70}{res}    27.29
+{txt}corr(u_i, Xb){col 16}= {res}-0.9919{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:132} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}global_adj_int_tr~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2} -.048408{col 33}{space 2} .0219913{col 44}{space 1}   -2.20{col 53}{space 3}0.029{col 61}{space 4}-.0919119{col 74}{space 3} -.004904
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1305306{col 33}{space 2} .0116741{col 44}{space 1}   11.18{col 53}{space 3}0.000{col 61}{space 4} .1074365{col 74}{space 3} .1536248
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .1197509{col 33}{space 2} .0152644{col 44}{space 1}    7.85{col 53}{space 3}0.000{col 61}{space 4} .0895542{col 74}{space 3} .1499476
+{txt}{space 16}war {c |}{col 21}{res}{space 2}-.0168139{col 33}{space 2} .0238657{col 44}{space 1}   -0.70{col 53}{space 3}0.482{col 61}{space 4} -.064026{col 74}{space 3} .0303983
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000147{col 33}{space 2} .0000216{col 44}{space 1}   -0.68{col 53}{space 3}0.498{col 61}{space 4}-.0000574{col 74}{space 3} .0000281
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0508196{col 33}{space 2} .0187305{col 44}{space 1}    2.71{col 53}{space 3}0.008{col 61}{space 4} .0137662{col 74}{space 3}  .087873
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0786834{col 33}{space 2} .0136917{col 44}{space 1}   -5.75{col 53}{space 3}0.000{col 61}{space 4} -.105769{col 74}{space 3}-.0515979
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0473644{col 33}{space 2} .0231462{col 44}{space 1}   -2.05{col 53}{space 3}0.043{col 61}{space 4}-.0931531{col 74}{space 3}-.0015758
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0046147{col 33}{space 2} .0181562{col 44}{space 1}   -0.25{col 53}{space 3}0.800{col 61}{space 4} -.040532{col 74}{space 3} .0313027
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-2.371851{col 33}{space 2} .2219863{col 44}{space 1}  -10.68{col 53}{space 3}0.000{col 61}{space 4}-2.810992{col 74}{space 3}-1.932709
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .43964016
+            {txt}sigma_e {c |} {res} .14780524
+                {txt}rho {c |} {res} .89845022{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on global_adj_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     7,304
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       166
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0047{col 63}{txt}min{col 67}={col 69}{res}        44
+{txt}     between = {res}     .{col 63}{txt}avg{col 67}={col 69}{res}      44.0
+{txt}     overall = {res}0.0046{col 63}{txt}max{col 67}={col 69}{res}        44
+
+{txt}{col 49}F({res}1{txt},{res}165{txt}){col 67}={col 70}{res}    22.97
+{txt}corr(u_i, Xb){col 16}= {res}-0.1438{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:166} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}global_adj_US_~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.1364971{col 30}{space 2} .0284813{col 41}{space 1}   -4.79{col 50}{space 3}0.000{col 58}{space 4}-.1927319{col 71}{space 3}-.0802622
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .0910179{col 30}{space 2} .0002223{col 41}{space 1}  409.50{col 50}{space 3}0.000{col 58}{space 4} .0905791{col 71}{space 3} .0914568
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .00173192
+         {txt}sigma_e {c |} {res} .17492508
+             {txt}rho {c |} {res} .00009802{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,501
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       132
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.1385{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.2754{col 63}{txt}avg{col 67}={col 69}{res}      34.1
+{txt}     overall = {res}0.0013{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}9{txt},{res}131{txt}){col 67}={col 70}{res}    29.33
+{txt}corr(u_i, Xb){col 16}= {res}-0.9914{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:132} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}global_adj_US_tra~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0576629{col 33}{space 2} .0211721{col 44}{space 1}   -2.72{col 53}{space 3}0.007{col 61}{space 4}-.0995463{col 74}{space 3}-.0157795
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1139255{col 33}{space 2} .0113149{col 44}{space 1}   10.07{col 53}{space 3}0.000{col 61}{space 4}  .091542{col 74}{space 3}  .136309
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .1726627{col 33}{space 2} .0159247{col 44}{space 1}   10.84{col 53}{space 3}0.000{col 61}{space 4} .1411597{col 74}{space 3} .2041656
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0192642{col 33}{space 2} .0224069{col 44}{space 1}    0.86{col 53}{space 3}0.392{col 61}{space 4} -.025062{col 74}{space 3} .0635904
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000142{col 33}{space 2}  .000022{col 44}{space 1}   -0.64{col 53}{space 3}0.521{col 61}{space 4}-.0000577{col 74}{space 3} .0000294
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2}  .051207{col 33}{space 2} .0176008{col 44}{space 1}    2.91{col 53}{space 3}0.004{col 61}{space 4} .0163884{col 74}{space 3} .0860257
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}  -.06966{col 33}{space 2} .0084229{col 44}{space 1}   -8.27{col 53}{space 3}0.000{col 61}{space 4}-.0863226{col 74}{space 3}-.0529974
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0405362{col 33}{space 2} .0208949{col 44}{space 1}   -1.94{col 53}{space 3}0.055{col 61}{space 4}-.0818713{col 74}{space 3} .0007988
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2}-.0066441{col 33}{space 2} .0154158{col 44}{space 1}   -0.43{col 53}{space 3}0.667{col 61}{space 4}-.0371403{col 74}{space 3} .0238522
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-2.679078{col 33}{space 2} .2197681{col 44}{space 1}  -12.19{col 53}{space 3}0.000{col 61}{space 4}-3.113832{col 74}{space 3}-2.244324
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .49270028
+            {txt}sigma_e {c |} {res} .13746564
+                {txt}rho {c |} {res} .92777843{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on global_nom_int_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     7,304
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       166
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0030{col 63}{txt}min{col 67}={col 69}{res}        44
+{txt}     between = {res}0.0000{col 63}{txt}avg{col 67}={col 69}{res}      44.0
+{txt}     overall = {res}0.0029{col 63}{txt}max{col 67}={col 69}{res}        44
+
+{txt}{col 49}F({res}1{txt},{res}165{txt}){col 67}={col 70}{res}    11.98
+{txt}corr(u_i, Xb){col 16}= {res}-0.1438{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0007
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:166} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}global_nom_int~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.1055795{col 30}{space 2} .0305058{col 41}{space 1}   -3.46{col 50}{space 3}0.001{col 58}{space 4}-.1658115{col 71}{space 3}-.0453474
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .1192994{col 30}{space 2} .0002381{col 41}{space 1}  501.12{col 50}{space 3}0.000{col 58}{space 4} .1188294{col 71}{space 3} .1197695
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .00133963
+         {txt}sigma_e {c |} {res} .17070698
+             {txt}rho {c |} {res} .00006158{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,501
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       132
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0682{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.0512{col 63}{txt}avg{col 67}={col 69}{res}      34.1
+{txt}     overall = {res}0.0001{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}9{txt},{res}131{txt}){col 67}={col 70}{res}    30.75
+{txt}corr(u_i, Xb){col 16}= {res}-0.9888{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:132} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}global_nom_int_tr~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0543218{col 33}{space 2} .0271222{col 44}{space 1}   -2.00{col 53}{space 3}0.047{col 61}{space 4} -.107976{col 74}{space 3}-.0006677
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1186055{col 33}{space 2}  .010033{col 44}{space 1}   11.82{col 53}{space 3}0.000{col 61}{space 4} .0987578{col 74}{space 3} .1384532
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0193351{col 33}{space 2} .0118393{col 44}{space 1}    1.63{col 53}{space 3}0.105{col 61}{space 4}-.0040859{col 74}{space 3} .0427561
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0159208{col 33}{space 2} .0187055{col 44}{space 1}    0.85{col 53}{space 3}0.396{col 61}{space 4}-.0210832{col 74}{space 3} .0529248
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000121{col 33}{space 2} .0000157{col 44}{space 1}   -0.77{col 53}{space 3}0.442{col 61}{space 4}-.0000432{col 74}{space 3}  .000019
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0393794{col 33}{space 2} .0150472{col 44}{space 1}    2.62{col 53}{space 3}0.010{col 61}{space 4} .0096125{col 74}{space 3} .0691463
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0466192{col 33}{space 2} .0203035{col 44}{space 1}   -2.30{col 53}{space 3}0.023{col 61}{space 4}-.0867844{col 74}{space 3}-.0064541
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0496961{col 33}{space 2} .0167738{col 44}{space 1}   -2.96{col 53}{space 3}0.004{col 61}{space 4}-.0828787{col 74}{space 3}-.0165135
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2} .0056259{col 33}{space 2} .0141134{col 44}{space 1}    0.40{col 53}{space 3}0.691{col 61}{space 4}-.0222937{col 74}{space 3} .0335455
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.340714{col 33}{space 2} .1887582{col 44}{space 1}   -7.10{col 53}{space 3}0.000{col 61}{space 4}-1.714123{col 74}{space 3}-.9673055
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res}  .2613044
+            {txt}sigma_e {c |} {res} .13066134
+                {txt}rho {c |} {res} .79997761{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+now regressing new_intervention on global_nom_US_trade_growth
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     7,304
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       166
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0049{col 63}{txt}min{col 67}={col 69}{res}        44
+{txt}     between = {res}0.0000{col 63}{txt}avg{col 67}={col 69}{res}      44.0
+{txt}     overall = {res}0.0048{col 63}{txt}max{col 67}={col 69}{res}        44
+
+{txt}{col 49}F({res}1{txt},{res}165{txt}){col 67}={col 70}{res}    14.87
+{txt}corr(u_i, Xb){col 16}= {res}-0.1438{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0002
+
+{txt}{ralign 82:(Std. Err. adjusted for {res:166} clusters in obs)}
+{hline 17}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 18}{c |}{col 30}    Robust
+{col 1}global_nom_US_~h{col 18}{c |}      Coef.{col 30}   Std. Err.{col 42}      t{col 50}   P>|t|{col 58}     [95% Con{col 71}f. Interval]
+{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+new_intervention {c |}{col 18}{res}{space 2}-.1217798{col 30}{space 2} .0315832{col 41}{space 1}   -3.86{col 50}{space 3}0.000{col 58}{space 4}-.1841392{col 71}{space 3}-.0594204
+{txt}{space 11}_cons {c |}{col 18}{res}{space 2} .0973536{col 30}{space 2} .0002465{col 41}{space 1}  394.99{col 50}{space 3}0.000{col 58}{space 4}  .096867{col 71}{space 3} .0978403
+{txt}{hline 17}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+         sigma_u {c |} {res} .00154518
+         {txt}sigma_e {c |} {res} .15302783
+             {txt}rho {c |} {res} .00010195{txt}   (fraction of variance due to u_i)
+{hline 17}{c BT}{hline 64}
+now the same regression controllong for stuff
+{res}
+{txt}Fixed-effects (within) regression{col 49}Number of obs{col 67}={col 69}{res}     4,501
+{txt}Group variable: {res}obs{txt}{col 49}Number of groups{col 67}={col 69}{res}       132
+
+{txt}R-sq:{col 49}Obs per group:
+     within  = {res}0.0849{col 63}{txt}min{col 67}={col 69}{res}        13
+{txt}     between = {res}0.1907{col 63}{txt}avg{col 67}={col 69}{res}      34.1
+{txt}     overall = {res}0.0003{col 63}{txt}max{col 67}={col 69}{res}        42
+
+{txt}{col 49}F({res}9{txt},{res}131{txt}){col 67}={col 70}{res}    48.23
+{txt}corr(u_i, Xb){col 16}= {res}-0.9914{txt}{col 49}Prob > F{col 67}={col 73}{res}0.0000
+
+{txt}{ralign 85:(Std. Err. adjusted for {res:132} clusters in obs)}
+{hline 20}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 21}{c |}{col 33}    Robust
+{col 1}global_nom_US_tra~h{col 21}{c |}      Coef.{col 33}   Std. Err.{col 45}      t{col 53}   P>|t|{col 61}     [95% Con{col 74}f. Interval]
+{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 3}new_intervention {c |}{col 21}{res}{space 2}-.0627806{col 33}{space 2} .0261658{col 44}{space 1}   -2.40{col 53}{space 3}0.018{col 61}{space 4}-.1145427{col 74}{space 3}-.0110185
+{txt}{space 7}ln_total_gdp {c |}{col 21}{res}{space 2} .1025503{col 33}{space 2} .0093835{col 44}{space 1}   10.93{col 53}{space 3}0.000{col 61}{space 4} .0839876{col 74}{space 3} .1211131
+{txt}ln_total_population {c |}{col 21}{res}{space 2} .0735262{col 33}{space 2} .0122443{col 44}{space 1}    6.00{col 53}{space 3}0.000{col 61}{space 4} .0493042{col 74}{space 3} .0977483
+{txt}{space 16}war {c |}{col 21}{res}{space 2} .0530868{col 33}{space 2} .0171923{col 44}{space 1}    3.09{col 53}{space 3}0.002{col 61}{space 4} .0190764{col 74}{space 3} .0870971
+{txt}{space 11}economic {c |}{col 21}{res}{space 2}-.0000113{col 33}{space 2} .0000161{col 44}{space 1}   -0.70{col 53}{space 3}0.483{col 61}{space 4}-.0000431{col 74}{space 3} .0000205
+{txt}{space 7}RUSinfluence {c |}{col 21}{res}{space 2} .0401996{col 33}{space 2} .0133518{col 44}{space 1}    3.01{col 53}{space 3}0.003{col 61}{space 4} .0137867{col 74}{space 3} .0666126
+{txt}{space 7}threat_force {c |}{col 21}{res}{space 2}-.0373893{col 33}{space 2} .0049391{col 44}{space 1}   -7.57{col 53}{space 3}0.000{col 61}{space 4}  -.04716{col 74}{space 3}-.0276185
+{txt}{space 9}show_force {c |}{col 21}{res}{space 2}-.0430996{col 33}{space 2} .0136027{col 44}{space 1}   -3.17{col 53}{space 3}0.002{col 61}{space 4} -.070009{col 74}{space 3}-.0161902
+{txt}{space 10}use_force {c |}{col 21}{res}{space 2} .0031039{col 33}{space 2} .0112338{col 44}{space 1}    0.28{col 53}{space 3}0.783{col 61}{space 4}-.0191193{col 74}{space 3}  .025327
+{txt}{space 14}_cons {c |}{col 21}{res}{space 2}-1.665794{col 33}{space 2} .1835903{col 44}{space 1}   -9.07{col 53}{space 3}0.000{col 61}{space 4} -2.02898{col 74}{space 3}-1.302609
+{txt}{hline 20}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+            sigma_u {c |} {res} .31292921
+            {txt}sigma_e {c |} {res} .11756574
+                {txt}rho {c |} {res} .87631186{txt}   (fraction of variance due to u_i)
+{hline 20}{c BT}{hline 64}
+
+{com}. 
 . *---------------calculate difference in growth rates--------------*
 . *diff in adj US growth
 . gen diff_adj_intl_trade = adj_int_trade_growth - global_adj_int_trade_growth
@@ -348,11 +2266,10 @@ options to control this behavior.{p_end}
 . *run RDD on trend 
 . foreach var of varlist diff* {c -(}
 {txt}  2{com}.         local trade_var `var'
-{txt}  3{com}.         rdplot `trade_var' distance_from_intv if -3<= distance_from_intv & distance_from_intv <= 3, p(1) graph_options( title("Effect of `influence' on Trade (`var')") ytitle("National - Global Trade Growth Rate") xtitle("years relative to `influence' onset"))
+{txt}  3{com}.         rdplot `trade_var' distance_from_intv if -3<= distance_from_intv & distance_from_intv <= 3, p(1) graph_options( title("Effect of USinfluence on Trade (`var')") ytitle("Difference Between National and Global Trade Growth Rate"))
 {txt}  4{com}.         graph export "`var'_p1.png", as(png) replace
-{txt}  5{com}.         rdplot `trade_var' distance_from_intv if -3<= distance_from_intv & distance_from_intv <= 3, p(3) graph_options( title("Effect of `influence' on Trade (`var')") ytitle("National - Global Trade Growth Rate") xtitle("years relative to `influence' onset"))
-{txt}  6{com}. 
-.         graph export "`var'_p3.png", as(png) replace
+{txt}  5{com}.         rdplot `trade_var' distance_from_intv if -3<= distance_from_intv & distance_from_intv <= 3, p(3) graph_options( title("Effect of USinfluence on Trade (`var')") ytitle("Difference Between National and Global Trade Growth Rate"))
+{txt}  6{com}.         graph export "`var'_p3.png", as(png) replace
 {txt}  7{com}.         {c )-}
 {res}
 RD Plot with evenly spaced mimicking variance number of bins using spacings estimators.
@@ -369,17 +2286,17 @@ Outcome: diff_adj_intl_trade. Running variable: distance_from_intv.
 {txt}{hline 22}{c TT}{hline 22}
 {col 22} {c |} {col 23}Left of {res}c{col 36}{txt}Right of {res}c
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       11{col 37}       46
-{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.273{col 37}    0.065
-{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.273{col 37}    0.065
+{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}        9{col 37}       18
+{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.333{col 37}    0.167
+{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.333{col 37}    0.167
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        1{col 37}        7
-{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       11{col 37}       46
+{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        1{col 37}        6
+{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}        9{col 37}       18
 {txt}{hline 22}{c +}{hline 22}
 {lalign 1:Rel. to IMSE-optimal:}{col 22} {c |} 
-{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}   11.000{col 37}    6.571
-{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.001{col 37}    0.004
-{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.999{col 37}    0.996
+{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    9.000{col 37}    3.000
+{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.001{col 37}    0.036
+{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.999{col 37}    0.964
 {txt}{hline 22}{c BT}{hline 22}
 
 {res}{txt}(file diff_adj_intl_trade_p1.png written in PNG format)
@@ -398,17 +2315,17 @@ Outcome: diff_adj_intl_trade. Running variable: distance_from_intv.
 {txt}{hline 22}{c TT}{hline 22}
 {col 22} {c |} {col 23}Left of {res}c{col 36}{txt}Right of {res}c
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       21{col 37}       11
-{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.143{col 37}    0.273
-{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.143{col 37}    0.273
+{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       25{col 37}        7
+{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.120{col 37}    0.429
+{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.120{col 37}    0.429
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        2{col 37}        5
-{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       21{col 37}       11
+{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        2{col 37}        4
+{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       25{col 37}        7
 {txt}{hline 22}{c +}{hline 22}
 {lalign 1:Rel. to IMSE-optimal:}{col 22} {c |} 
-{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}   10.500{col 37}    2.200
-{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.001{col 37}    0.086
-{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.999{col 37}    0.914
+{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}   12.500{col 37}    1.750
+{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.001{col 37}    0.157
+{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.999{col 37}    0.843
 {txt}{hline 22}{c BT}{hline 22}
 
 {res}{txt}(file diff_adj_intl_trade_p3.png written in PNG format)
@@ -427,17 +2344,17 @@ Outcome: diff_adj_US_trade. Running variable: distance_from_intv.
 {txt}{hline 22}{c TT}{hline 22}
 {col 22} {c |} {col 23}Left of {res}c{col 36}{txt}Right of {res}c
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       19{col 37}        3
-{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.158{col 37}    1.000
-{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.158{col 37}    1.000
+{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}      140{col 37}      147
+{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.021{col 37}    0.020
+{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.021{col 37}    0.020
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        3{col 37}        2
-{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       19{col 37}        3
+{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        5{col 37}        7
+{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}      140{col 37}      147
 {txt}{hline 22}{c +}{hline 22}
 {lalign 1:Rel. to IMSE-optimal:}{col 22} {c |} 
-{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    6.333{col 37}    1.500
-{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.004{col 37}    0.229
-{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.996{col 37}    0.771
+{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}   28.000{col 37}   21.000
+{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.000{col 37}    0.000
+{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    1.000{col 37}    1.000
 {txt}{hline 22}{c BT}{hline 22}
 
 {res}{txt}(file diff_adj_US_trade_p1.png written in PNG format)
@@ -456,17 +2373,17 @@ Outcome: diff_adj_US_trade. Running variable: distance_from_intv.
 {txt}{hline 22}{c TT}{hline 22}
 {col 22} {c |} {col 23}Left of {res}c{col 36}{txt}Right of {res}c
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}        4{col 37}       24
-{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.750{col 37}    0.125
-{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.750{col 37}    0.125
+{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       31{col 37}       12
+{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.097{col 37}    0.250
+{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.097{col 37}    0.250
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        2{col 37}        4
-{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}        4{col 37}       24
+{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        3{col 37}        3
+{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       31{col 37}       12
 {txt}{hline 22}{c +}{hline 22}
 {lalign 1:Rel. to IMSE-optimal:}{col 22} {c |} 
-{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    2.000{col 37}    6.000
-{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.111{col 37}    0.005
-{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.889{col 37}    0.995
+{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}   10.333{col 37}    4.000
+{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.001{col 37}    0.015
+{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.999{col 37}    0.985
 {txt}{hline 22}{c BT}{hline 22}
 
 {res}{txt}(file diff_adj_US_trade_p3.png written in PNG format)
@@ -485,17 +2402,17 @@ Outcome: diff_intl_trade. Running variable: distance_from_intv.
 {txt}{hline 22}{c TT}{hline 22}
 {col 22} {c |} {col 23}Left of {res}c{col 36}{txt}Right of {res}c
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}        9{col 37}        3
-{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.333{col 37}    1.000
-{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.333{col 37}    1.000
+{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       24{col 37}        4
+{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.125{col 37}    0.750
+{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.125{col 37}    0.750
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        3{col 37}        3
-{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}        9{col 37}        3
+{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        4{col 37}        3
+{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       24{col 37}        4
 {txt}{hline 22}{c +}{hline 22}
 {lalign 1:Rel. to IMSE-optimal:}{col 22} {c |} 
-{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    3.000{col 37}    1.000
-{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.036{col 37}    0.500
-{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.964{col 37}    0.500
+{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    6.000{col 37}    1.333
+{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.005{col 37}    0.297
+{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.995{col 37}    0.703
 {txt}{hline 22}{c BT}{hline 22}
 
 {res}{txt}(file diff_intl_trade_p1.png written in PNG format)
@@ -514,17 +2431,17 @@ Outcome: diff_intl_trade. Running variable: distance_from_intv.
 {txt}{hline 22}{c TT}{hline 22}
 {col 22} {c |} {col 23}Left of {res}c{col 36}{txt}Right of {res}c
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       10{col 37}       19
-{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.300{col 37}    0.158
-{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.300{col 37}    0.158
+{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       50{col 37}       33
+{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.060{col 37}    0.091
+{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.060{col 37}    0.091
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        3{col 37}        5
-{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       10{col 37}       19
+{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        5{col 37}        6
+{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       50{col 37}       33
 {txt}{hline 22}{c +}{hline 22}
 {lalign 1:Rel. to IMSE-optimal:}{col 22} {c |} 
-{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    3.333{col 37}    3.800
-{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.026{col 37}    0.018
-{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.974{col 37}    0.982
+{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}   10.000{col 37}    5.500
+{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.001{col 37}    0.006
+{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.999{col 37}    0.994
 {txt}{hline 22}{c BT}{hline 22}
 
 {res}{txt}(file diff_intl_trade_p3.png written in PNG format)
@@ -543,17 +2460,17 @@ Outcome: diff_US_trade. Running variable: distance_from_intv.
 {txt}{hline 22}{c TT}{hline 22}
 {col 22} {c |} {col 23}Left of {res}c{col 36}{txt}Right of {res}c
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}      206{col 37}       35
-{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.015{col 37}    0.086
-{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.015{col 37}    0.086
+{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       25{col 37}       92
+{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.120{col 37}    0.033
+{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.120{col 37}    0.033
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        9{col 37}        4
-{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}      206{col 37}       35
+{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        5{col 37}        5
+{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       25{col 37}       92
 {txt}{hline 22}{c +}{hline 22}
 {lalign 1:Rel. to IMSE-optimal:}{col 22} {c |} 
-{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}   22.889{col 37}    8.750
-{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.000{col 37}    0.001
-{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    1.000{col 37}    0.999
+{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    5.000{col 37}   18.400
+{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.008{col 37}    0.000
+{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.992{col 37}    1.000
 {txt}{hline 22}{c BT}{hline 22}
 
 {res}{txt}(file diff_US_trade_p1.png written in PNG format)
@@ -572,17 +2489,17 @@ Outcome: diff_US_trade. Running variable: distance_from_intv.
 {txt}{hline 22}{c TT}{hline 22}
 {col 22} {c |} {col 23}Left of {res}c{col 36}{txt}Right of {res}c
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       11{col 37}       17
-{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.273{col 37}    0.176
-{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.273{col 37}    0.176
+{ralign 21:Bins selected}{col 22} {c |} {col 23}{res}       11{col 37}      197
+{txt}{ralign 21:Average bin length}{col 22} {c |} {col 23}{res}    0.273{col 37}    0.015
+{txt}{ralign 21:Median bin length}{col 22} {c |} {col 23}{res}    0.273{col 37}    0.015
 {txt}{hline 22}{c +}{hline 22}
-{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        4{col 37}        3
-{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       11{col 37}       17
+{ralign 21:IMSE-optimal bins}{col 22} {c |} {col 23}{res}        4{col 37}        7
+{txt}{ralign 21:Mimicking Var. bins}{col 22} {c |} {col 23}{res}       11{col 37}      197
 {txt}{hline 22}{c +}{hline 22}
 {lalign 1:Rel. to IMSE-optimal:}{col 22} {c |} 
-{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    2.750{col 37}    5.667
-{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.046{col 37}    0.005
-{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.954{col 37}    0.995
+{ralign 21:Implied scale}{col 22} {c |} {col 23}{res}    2.750{col 37}   28.143
+{txt}{ralign 21:WIMSE var. weight}{col 22} {c |} {col 23}{res}    0.046{col 37}    0.000
+{txt}{ralign 21:WIMSE bias weight}{col 22} {c |} {col 23}{res}    0.954{col 37}    1.000
 {txt}{hline 22}{c BT}{hline 22}
 
 {res}{txt}(file diff_US_trade_p3.png written in PNG format)
@@ -594,7 +2511,7 @@ Outcome: diff_US_trade. Running variable: distance_from_intv.
       {txt}name:  {res}<unnamed>
        {txt}log:  {res}\\Files\ak29\GitHub\WWS_class\CI_log.smcl
   {txt}log type:  {res}smcl
- {txt}closed on:  {res} 8 Nov 2017, 13:50:15
+ {txt}closed on:  {res} 8 Nov 2017, 17:47:02
 {txt}{.-}
 {smcl}
 {txt}{sf}{ul off}

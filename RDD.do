@@ -15,10 +15,14 @@ http://fmwww.bc.edu/repec/bocode/r/rdplot.html
 
 cap log close
 set more off
-cap log using CI_log, replace
+log using CI_log, replace
 
-*create running variable
 use "\\files\ak29\ClusterDownloads\Commercial_imperialism_old.dta", clear
+
+cd "\\Files\ak29\GitHub\WWS_class\
+
+*-------------------create running variable------------------------------*
+
 
 *cleaning commands
 count if year_after_onset > 0 & USinfluence == 0 & US_install_and_support  == 0 & US_support_only == 0
@@ -31,7 +35,7 @@ replace new_intervention = 1 if `influence' == 1 & `influence'[_n-1] != 1 & `inf
 sort country year
 bysort country: gen inc_count = sum(new_intervention)
 replace inc_count = 0 if new_intervention != 1
-drop new_intervention
+
 
 *calcualte the distance from the first intervention (for each country)
 sort country year 
@@ -59,7 +63,12 @@ bysort country: gen second_int = sum(end_flag)
 gen distance_from_intv = yr_from_influ1
 replace distance_from_intv = yr_from_influ2 if second_int > 0
 
-*create varaibles measuring trade 
+*----------------------Check correlations of influence ------------------------*
+foreach var of varlist `influence' new_intervention `influence' {
+	corr(`var' ln_total_gdp ln_total_population war economic RUS *_force)
+}
+
+*----------------------create varaibles measuring trade ------------------------*
 *CLEANING TASK: figure out why some observations of intntl and US trade > 1
 gen adj_int_trade = (COW_importsWORLD + COW_exportsWORLD ) / total_gdp 
 gen adj_US_trade = (COW_importsUS + COW_exportsUS ) / total_gdp
@@ -69,6 +78,8 @@ gen nom_US_trade = COW_importsUS + COW_exportsUS
 
 *worldwide aggregates
 bysort year: egen sum_global_int_trade = sum(nom_int_trade)
+	
+*trim the variable to remove extreme values
 bysort year: egen sum_global_US_trade = sum(nom_US_trade)
 bysort year: egen sum_global_gdp = sum(total_gdp)
 
@@ -80,7 +91,7 @@ gen global_adj_US_trade = sum_global_US_trade / sum_global_gdp
 bysort year: egen global_nom_int_trade = total(nom_int_trade)
 bysort year: egen global_nom_US_trade = total(nom_US_trade)
 
-*--------------calculate growth rates----------------------------*
+*-----------------------calculate growth rates---------------------------------*
 
 
 foreach var of varlist adj* nom* global*{
@@ -91,14 +102,27 @@ foreach var of varlist adj* nom* global*{
 
 	*calcualte growth rate
 	gen `var'_rough = (`var'- l1_`var') / l1_`var'
-	
-	*trim the variable to remove extreme values
 	replace `var'_rough = . if `var'_rough > 10
 	sum `var'_rough, detail
 	gen `var'_growth = `var'_rough if `var'_rough <= r(p99)
 	
 	drop *_rough
 
+}
+
+*-------------Use a regression design to test the effect of US influence------*
+
+
+foreach treat of varlist USinfluence new_intervention {
+	foreach var of varlist adj* nom* *_growth {
+		local treatment `treat'
+	    *check correlation
+	    di "now regressing `treat' on `var'"
+	    xtreg `var'  `treat', fe robust
+	    *control for other factors
+	    di "now the same regression controllong for stuff"
+	    xtreg `var'  `treat' ln_total_gdp ln_total_population war economic RUS *_force, fe robust
+    }
 }
 
 *---------------calculate difference in growth rates--------------*
