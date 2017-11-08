@@ -1,7 +1,21 @@
+/*************************************
+Last Modified: 11/8
+Author: Alex Kaufman
+Changes Made: Corrected growth variables, added tile info, other tweaks
+
+NOTE: Users will need to change the file location of the data set being read in
+
+If the Rdplot command is failing, run the following command
+net install rdrobust, from(https://sites.google.com/site/rdpackages/rdrobust/stata) replace
+
+For info on the Rdplot function (how to change things on the graphs)
+http://fmwww.bc.edu/repec/bocode/r/rdplot.html
+
+*************************************/
 
 cap log close
 set more off
-log using CI_log, replace
+cap log using CI_log, replace
 
 *create running variable
 use "\\files\ak29\ClusterDownloads\Commercial_imperialism_old.dta", clear
@@ -45,59 +59,73 @@ bysort country: gen second_int = sum(end_flag)
 gen distance_from_intv = yr_from_influ1
 replace distance_from_intv = yr_from_influ2 if second_int > 0
 
-*create varaibles measuring trade
-gen intntl_trade = (COW_importsWORLD + COW_exportsWORLD ) / total_gdp
-gen US_trade = (COW_importsUS + COW_exportsUS ) / total_gdp
-gen real_intntl_trade = COW_importsWORLD + COW_exportsWORLD
-gen real_US_trade = COW_importsUS + COW_exportsUS
+*create varaibles measuring trade 
+*CLEANING TASK: figure out why some observations of intntl and US trade > 1
+gen adj_int_trade = (COW_importsWORLD + COW_exportsWORLD ) / total_gdp 
+gen adj_US_trade = (COW_importsUS + COW_exportsUS ) / total_gdp
+*CLEANING TASK: id outliers for nommial trade aggregates
+gen nom_int_trade = COW_importsWORLD + COW_exportsWORLD
+gen nom_US_trade = COW_importsUS + COW_exportsUS
 
 *worldwide aggregates
-bysort year: egen sum_global_int_trade = sum(real_intntl_trade)
-bysort year: egen sum_global_US_trade = sum(real_US_trade)
+bysort year: egen sum_global_int_trade = sum(nom_int_trade)
+bysort year: egen sum_global_US_trade = sum(nom_US_trade)
 bysort year: egen sum_global_gdp = sum(total_gdp)
 
 *worldwide trade adjusted by gdp
-gen global_int_trade = sum_global_int_trade / sum_global_gdp
-gen global_US_trade = sum_global_US_trade / sum_global_gdp
+gen global_adj_int_trade = sum_global_int_trade / sum_global_gdp
+gen global_adj_US_trade = sum_global_US_trade / sum_global_gdp
 
 
-bysort year: egen global_rl_int_trade = total(intntl_trade)
-bysort year: egen global_rl_US_trade = total(US_trade)
+bysort year: egen global_nom_int_trade = total(nom_int_trade)
+bysort year: egen global_nom_US_trade = total(nom_US_trade)
 
-*--------------calculate growth rates------------
+*--------------calculate growth rates----------------------------*
 
-*create lagged variables
-foreach var in global_int_trade global_US_trade global_rl_int_trade global_rl_US_trade intntl_trade US_trade real_intntl_trade real_US_trade {
 
+foreach var of varlist adj* nom* global*{
+ 
+	*create lagged variable
 	sort country year
 	by country: gen l1_`var' = `var'[_n-1]
 
 	*calcualte growth rate
-	gen `var'_growth = (`var'- l1_`var' ) / l1_`var'
+	gen `var'_rough = (`var'- l1_`var') / l1_`var'
+	
+	*trim the variable to remove extreme values
+	replace `var'_rough = . if `var'_rough > 10
+	sum `var'_rough, detail
+	gen `var'_growth = `var'_rough if `var'_rough <= r(p99)
+	
+	drop *_rough
 
 }
 
-*calculate difference in growth rates!!!
+*---------------calculate difference in growth rates--------------*
 *diff in adj US growth
-gen diff_adj_intl_trade = intntl_trade_growth - global_int_trade_growth
+gen diff_adj_intl_trade = adj_int_trade_growth - global_adj_int_trade_growth
 
 *diff in adj intl growth
-gen diff_adj_US_trade = US_trade_growth - global_US_trade_growth
+gen diff_adj_US_trade = adj_US_trade_growth - global_adj_US_trade_growth
 
 *diff in total US growth
-gen diff_intl_trade = real_intntl_trade_growth - global_rl_int_trade_growth
+gen diff_intl_trade = nom_int_trade_growth - global_nom_int_trade_growth
 
 *diff in total intl growth
-gen diff_us_trade = real_US_trade_growth - global_rl_US_trade_growth
+gen diff_US_trade = nom_US_trade_growth - global_nom_US_trade_growth
 
 
-twoway scatter US_trade_growth year
+*twoway scatter US_trade_growth year
 
 *run RDD on trend 
-local trade_var real_US_trade_growth
-rdplot `trade_var' distance_from_intv if -5<= distance_from_intv & distance_from_intv <= 5, p(1)
+foreach var of varlist diff* {
+	local trade_var `var'
+	rdplot `trade_var' distance_from_intv if -3<= distance_from_intv & distance_from_intv <= 3, p(1) graph_options( title("Effect of USinfluence on Trade (`var')") ytitle("Difference Between National and Global Trade Growth Rate"))
+	graph export "`var'_p1.png", as(png) replace
+	rdplot `trade_var' distance_from_intv if -3<= distance_from_intv & distance_from_intv <= 3, p(3) graph_options( title("Effect of USinfluence on Trade (`var')") ytitle("Difference Between National and Global Trade Growth Rate"))
+	graph export "`var'_p3.png", as(png) replace
+	}
 
-*run DID?
 
 
 log close
