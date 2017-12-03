@@ -57,6 +57,6 @@ twoway (scatter growth tradeshare,mlabel(country)) (lfit growth tradeshare), tit
 graph export "PartC.png", replace
 
 
-twoway (scatter growth tradeshare if country_name != "Malta",mlabel(country)) (lfit growth tradeshare), title("Part D") 
+twoway (scatter growth tradeshare if country_name != "Malta",mlabel(country)) (lfit growth tradeshare if country_name!="Malta"), title("Part D") 
 graph export "PartD.png", replace
 
