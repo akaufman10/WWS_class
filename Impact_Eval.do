@@ -13,7 +13,7 @@ local data nswd13.dta
 
 local codePATH "C:\Users\fcoca\OneDrive\Documentos\GitHub\WWS_class"
 
-local vars age ed black hisp married nodeg 
+local vars age age2 ed black hisp married nodeg 
 
 ********************************************************************************
 cd `codePATH'
@@ -124,16 +124,22 @@ di "------------Average Treatment On Untreated-------------"
 di `r(atu)'
 
 
-*repeat using teffects pscore matching 
-teffects psmatch (re78) (treat2 `vars'), ate
-teffects psmatch (re78) (treat2 `vars'), atet
 
+
+*repeat using teffects pscore matching 
+teffects psmatch (re78) (treat2 `vars'), ate  pstolerance(1e-9)
+teffects psmatch (re78) (treat2 `vars'), atet pstolerance(1e-9)
 
 *repeat excercise using Angrist (2009) restriction
-keep if pscore > .1
-keep if pscore < .9
+keep if _pscore > .1
+keep if _pscore < .9
+
 
 psmatch2 treat2 `vars' re74 re75, out(re78) ate common
+
+teffects psmatch (re78) (treat2 `vars'), ate  pstolerance(1e-9)
+teffects psmatch (re78) (treat2 `vars'), atet pstolerance(1e-9)
+
 
 ********************************************************************************
 
