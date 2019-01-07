@@ -25,6 +25,10 @@ cd `dataPATH'
 use `data', clear
 
 **************************************Q1****************************************
+preserve
+
+keep if sample == 0
+
 
 *standardize control variables and check balance 
 foreach var of local vars {
@@ -40,6 +44,9 @@ foreach var of varlist re74 re75 {
 
 *examine effect of treatment variable in sample
 reg re78 treat
+
+restore
+
 *************************************Q2*****************************************
 
 *create a flag for CPS only treatment control
