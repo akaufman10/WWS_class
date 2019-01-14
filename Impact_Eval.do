@@ -18,7 +18,7 @@ local vars age age2 ed black hisp married nodeg
 ********************************************************************************
 cd `codePATH'
 cap log close
-cap log using ie.log, replace
+cap log using ie.log, text replace
 
 
 cd `dataPATH'
@@ -88,7 +88,7 @@ sum re75 if treat == 0
 drop if treat2 == .
 
 *
-psmatch2 treat2 `vars' re74 re75, common
+psmatch2 treat2 `vars' re74 re75, common 
 ren _pscore pscore
 ren _support csupport
 
@@ -101,7 +101,7 @@ bysort treat2: sum pscore, det
 
 
 *manually calculate pscore and check common support
-logit treat2 `vars' re74 re75
+probit treat2 `vars' re74 re75
 predict double pscore_m
 
 *compare p scores
@@ -138,7 +138,8 @@ drop _*
 
 
 *propensity score matching estimation
-psmatch2 treat2 `vars' re74 re75, out(re78) ate common
+psmatch2 treat2 `vars' re74 re75, out(re78) ate common 
+pstest
 
 *examine ATE, ATT, ATU
 
@@ -156,12 +157,13 @@ di `r(atu)'
 
 
 *repeat using teffects pscore matching 
-teffects psmatch (re78) (treat2 `vars'), ate  pstolerance(1e-9)
-teffects psmatch (re78) (treat2 `vars'), atet pstolerance(1e-9)
+teffects psmatch (re78) (treat2 `vars' re75 re74), ate  pstolerance(1e-9)
+teffects psmatch (re78) (treat2 `vars' re75 re74), atet pstolerance(1e-9)
 
 
 tebalance summarize
 tebalance summarize, baseline
+
 tebalance density
 tebalance box
 

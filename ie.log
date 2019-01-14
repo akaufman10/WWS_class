@@ -1,4 +1,4 @@
-
+Alex Kaufman
 . 
 . 
 . cd `dataPATH'
@@ -755,11 +755,13 @@ C:\Users\fcoca\Downloads
         re75 |     16,252    13452.69    9334.519          0   25243.55
 
 . 
+. *drop experimental control group
 . drop if treat2 == .
 (260 observations deleted)
 
 . 
-. psmatch2 treat2 `vars' re74 re75, common
+. *
+. psmatch2 treat2 `vars' re74 re75, common 
 
 Probit regression                               Number of obs     =     16,177
                                                 LR chi2(9)        =    1105.79
@@ -786,6 +788,7 @@ Note: 3032 failures and 0 successes completely determined.
 
 . ren _support csupport
 
+. 
 . 
 . *check common support 
 . tab treat2 csupport
@@ -877,6 +880,20 @@ Note: 3032 failures and 0 successes completely determined.
 
 . predict double pscore_m
 (option pr assumed; Pr(treat2))
+
+. 
+. *compare p scores
+. sum pscore
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+      pscore |     16,177    .0114828    .0578694   2.08e-21   .7372084
+
+. sum pscore_m
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    pscore_m |     16,177    .0114828    .0578694   2.08e-21   .7372084
 
 . 
 . *check common support
@@ -976,7 +993,7 @@ csupport_m |         0          1 |     Total
 . 
 . 
 . *propensity score matching estimation
-. psmatch2 treat2 `vars' re74 re75, out(re78) ate common
+. psmatch2 treat2 `vars' re74 re75, out(re78) ate common 
 
 Probit regression                               Number of obs     =     16,177
                                                 LR chi2(9)        =    1105.79
@@ -1026,6 +1043,31 @@ assignment | Off suppo  On suppor |     Total
      Total |    11,096      5,081 |    16,177 
 
 
+. pstest
+
+------------------------------------------------------------------------------
+                        |       Mean               |     t-test    |  V(T)/
+Variable                | Treated Control    %bias |    t    p>|t| |  V(C)
+------------------------+--------------------------+---------------+----------
+age                     |  25.67   25.793     -1.3 |  -0.16  0.871 |  1.05
+age2                    | 710.83   714.68     -0.6 |  -0.09  0.930 |  1.24
+ed                      | 10.413   10.335      3.2 |   0.32  0.747 |  0.58*
+black                   | .83799   .84358     -1.8 |  -0.14  0.886 |     .
+hisp                    | .06145   .05028      4.5 |   0.46  0.646 |     .
+married                 | .19553   .21788     -5.3 |  -0.52  0.603 |     .
+nodeg                   | .69832   .68715      2.4 |   0.23  0.819 |     .
+re74                    | 2165.8   2223.4     -0.8 |  -0.13  0.899 |  2.06*
+re75                    | 1583.4     1590     -0.1 |  -0.02  0.984 |  1.19
+------------------------------------------------------------------------------
+* if variance ratio outside [0.74; 1.34]
+
+----------------------------------------------------------------------
+Ps R2   LR chi2   p>chi2   MeanBias   MedBias      B       R     %Var 
+----------------------------------------------------------------------
+0.003      1.41    0.998      2.2       1.8      12.5    0.89      40
+----------------------------------------------------------------------
+* if B>25%, R outside [0.5; 2]
+
 . 
 . *examine ATE, ATT, ATU
 . 
@@ -1033,21 +1075,21 @@ assignment | Off suppo  On suppor |     Total
 ------------Average Treatment Effects------------------
 
 . di `r(ate)'
-1757.6205
+
 
 . 
 . di "------------Average Treatment On Treat-----------------"
 ------------Average Treatment On Treat-----------------
 
 . di `r(att)'
-1328.4048
+
 
 . 
 . di "------------Average Treatment On Untreated-------------"
 ------------Average Treatment On Untreated-------------
 
 . di `r(atu)'
-1773.2936
+
 
 . 
 . 
@@ -1055,34 +1097,34 @@ assignment | Off suppo  On suppor |     Total
 . 
 . 
 . *repeat using teffects pscore matching 
-. teffects psmatch (re78) (treat2 `vars'), ate  pstolerance(1e-9)
+. teffects psmatch (re78) (treat2 `vars' re75 re74), ate  pstolerance(1e-9)
 
 Treatment-effects estimation                   Number of obs      =     16,177
 Estimator      : propensity-score matching     Matches: requested =          1
 Outcome model  : matching                                     min =          1
-Treatment model: logit                                        max =        138
+Treatment model: logit                                        max =          9
 ------------------------------------------------------------------------------
              |              AI Robust
         re78 |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
 ATE          |
       treat2 |
-   (1 vs 0)  |  -6681.563    3870.27    -1.73   0.084    -14267.15    904.0278
+   (1 vs 0)  |  -2960.664   9605.994    -0.31   0.758    -21788.07    15866.74
 ------------------------------------------------------------------------------
 
-. teffects psmatch (re78) (treat2 `vars'), atet pstolerance(1e-9)
+. teffects psmatch (re78) (treat2 `vars' re75 re74), atet pstolerance(1e-9)
 
 Treatment-effects estimation                   Number of obs      =     16,177
 Estimator      : propensity-score matching     Matches: requested =          1
 Outcome model  : matching                                     min =          1
-Treatment model: logit                                        max =        138
+Treatment model: logit                                        max =          9
 ------------------------------------------------------------------------------
              |              AI Robust
         re78 |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
 -------------+----------------------------------------------------------------
 ATET         |
       treat2 |
-   (1 vs 0)  |  -3844.111   880.1469    -4.37   0.000    -5569.167   -2119.054
+   (1 vs 0)  |   2031.696   879.0842     2.31   0.021     308.7224    3754.669
 ------------------------------------------------------------------------------
 
 . 
@@ -1102,13 +1144,15 @@ note: refitting the model using the generate() option
                   |Standardized differences          Variance ratio
                   |        Raw     Matched           Raw    Matched
   ----------------+------------------------------------------------
-              age |  -.7961833    .0108654      .4196365   1.117203
-             age2 |  -.8031274    .0223465      .3020035   1.190605
-               ed |  -.6785021   -.0851049      .4905163   1.256015
-            black |   2.427747    .0435947      1.950622   .9240196
-             hisp |  -.0506973   -.0644646      .8410938   .7994987
-          married |  -1.232648   -.0136898      .7516725   .9787472
-            nodeg |   .9038111   -.0118903      .9975255   1.011149
+              age |  -.7961833   -.1728696      .4196365   .8593841
+             age2 |  -.8031274   -.1738768      .3020035   .9286768
+               ed |  -.6785021    .0439621      .4905163    .502087
+            black |   2.427747           0      1.950622          1
+             hisp |  -.0506973    .1003586      .8410938   1.536116
+          married |  -1.232648    .0420061      .7516725   1.072304
+            nodeg |   .9038111    .0930614      .9975255   .9276161
+             re75 |  -1.746428    .0827304      .1205903   1.894263
+             re74 |   -1.56899   -.0541769      .2607425   1.467212
   -----------------------------------------------------------------
 
 . tebalance summarize, baseline
@@ -1133,8 +1177,11 @@ note: refitting the model using the generate() option
              hisp |    .072036    .0594595       .066851    .056228
           married |   .7117309    .1891892      .2051829   .1542303
             nodeg |   .2958354    .7081081      .2083299   .2078143
+             re75 |    13650.8    1532.055      8.59e+07   1.04e+07
+             re74 |    14016.8    2095.574      9.16e+07   2.39e+07
   -----------------------------------------------------------------
 
+. 
 . tebalance density
 note: refitting the model using the generate() option
 
