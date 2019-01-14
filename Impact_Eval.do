@@ -47,7 +47,7 @@ reg re78 treat
 reg re78 treat re75
 reg re78 treat `vars' re75 re74
 restore
-BREAK!
+
 *************************************Q2*****************************************
 
 *create a flag for CPS only treatment control
@@ -84,11 +84,14 @@ sum re74 if treat == 0
 sum re75 if treat == 1
 sum re75 if treat == 0
 
+*drop experimental control group
 drop if treat2 == .
 
+*
 psmatch2 treat2 `vars' re74 re75, common
 ren _pscore pscore
 ren _support csupport
+
 
 *check common support 
 tab treat2 csupport
@@ -98,8 +101,12 @@ bysort treat2: sum pscore, det
 
 
 *manually calculate pscore and check common support
-probit treat2 `vars' re74 re75
+logit treat2 `vars' re74 re75
 predict double pscore_m
+
+*compare p scores
+sum pscore
+sum pscore_m
 
 *check common support
 bysort treat2: sum pscore_m, det
@@ -153,6 +160,10 @@ teffects psmatch (re78) (treat2 `vars'), ate  pstolerance(1e-9)
 teffects psmatch (re78) (treat2 `vars'), atet pstolerance(1e-9)
 
 
+tebalance summarize
+tebalance summarize, baseline
+tebalance density
+tebalance box
 
 ********************************************************************************
 
