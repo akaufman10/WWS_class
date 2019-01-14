@@ -44,9 +44,10 @@ foreach var of varlist re74 re75 {
 
 *examine effect of treatment variable in sample
 reg re78 treat
-
+reg re78 treat re75
+reg re78 treat `vars' re75 re74
 restore
-
+BREAK!
 *************************************Q2*****************************************
 
 *create a flag for CPS only treatment control
@@ -73,11 +74,16 @@ foreach var of varlist re74 re75 {
 reg re78 treat2 
 
 *************************************Q3*****************************************
-
 *control for observables using CPS control group
-reg re78 `vars' re74 re75
+reg re78 treat2 `vars' re74 re75
 
 ************************************Q4******************************************
+*examine income trends to check if parallel
+sum re74 if treat == 1
+sum re74 if treat == 0
+sum re75 if treat == 1
+sum re75 if treat == 0
+
 drop if treat2 == .
 
 psmatch2 treat2 `vars' re74 re75, common
